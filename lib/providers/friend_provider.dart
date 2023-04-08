@@ -11,12 +11,27 @@ class FriendProvider with ChangeNotifier{
       fromFirestore: AppUser.fromFirebase, toFirestore: AppUser.toFirebase);
 
   bool showFriend=false;
+  String emails="";
+  String getEmail(String email)
+  {
+    emails=email;
+    notifyListeners();
+    return emails;
+  }
+
 
   Future<void> updateFiends(AppUser user,  String friendId) async {
     List<String> friends=user.friends;
+    friends.insert(0,friendId);
 
-
-    return await _userCollection
+     return await _userCollection
+        .doc(user.id)
+        .update({AppUser.userFriendsKey: friends });
+  }
+  Future<void> deleteFiends(AppUser user,  String friendId) async {
+    List<String> friends=user.friends;
+    friends.remove(friendId);
+   return await _userCollection
         .doc(user.id)
         .update({AppUser.userFriendsKey: friends });
   }

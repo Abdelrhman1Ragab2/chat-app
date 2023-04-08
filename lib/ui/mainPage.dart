@@ -1,6 +1,7 @@
 import 'package:chat_if/model/users.dart';
 import 'package:chat_if/providers/authinticat.dart';
 import 'package:chat_if/providers/user_provider.dart';
+import 'package:chat_if/ui/drawer_options/files.dart';
 import 'package:chat_if/ui/splash_screen.dart';
 import 'package:chat_if/ui/status_page.dart';
 import 'package:chat_if/ui/tapBarPages.dart';
@@ -17,6 +18,10 @@ import 'auth.dart';
 import 'call_page.dart';
 import 'chats_page.dart';
 import 'chattingPage.dart';
+import 'drawer_options/photos.dart';
+import 'drawer_options/profile.dart';
+import 'drawer_options/settings.dart';
+import 'drawer_options/videos.dart';
 import 'friends_page.dart';
 
 class MainPage extends StatefulWidget {
@@ -40,10 +45,10 @@ class _MainPageState extends State<MainPage> {
             imgUrl: "",
             friends: [],
             email: ""),
-        stream: Provider.of<UserProvider>(context,listen: false).getCurrentUserStream(),
+        stream: Provider.of<UserProvider>(context, listen: false)
+            .getCurrentUserStream(),
         builder: (context, snapshot) {
           if (snapshot.hasError) {
-
             // if (kDebugMode) {
             //   print(snapshot.error.toString());
             // }
@@ -59,9 +64,9 @@ class _MainPageState extends State<MainPage> {
           return MaterialApp(
               debugShowCheckedModeBanner: false,
               theme: ThemeData(
-                  primaryColor: Color.fromARGB(255, 13, 40, 82),
-                  accentColor: Color.fromARGB(255, 127, 172, 181),
-                  appBarTheme: AppBarTheme(
+                  primaryColor: const Color.fromARGB(255, 26, 64, 126),
+                  accentColor: const Color.fromARGB(255, 127, 172, 181),
+                  appBarTheme: const  AppBarTheme(
                     color: Color.fromARGB(255, 13, 40, 82),
                   )),
               routes: {
@@ -70,7 +75,12 @@ class _MainPageState extends State<MainPage> {
                 StatusPage.routeName: (context) => StatusPage(),
                 CallPage.routeName: (context) => CallPage(),
                 CattingPage.routeName: (context) => CattingPage(),
-                FriendsScreen.routeName:(context)=>FriendsScreen(currentUser: user!),
+                FriendsScreen.routeName: (context) =>FriendsScreen(currentUser: user!),
+                FileOption.routeName: (context) => FileOption(),
+                VideoOption.routeName: (context) => VideoOption(),
+                PhotoOption.routeName:(context)=>PhotoOption(),
+                ProfileOption.routeName:(context)=>ProfileOption(),
+                SettingOption.routeName:(context)=>SettingOption(),
               },
               home: mapUserToHome(context, user));
         });
@@ -79,14 +89,8 @@ class _MainPageState extends State<MainPage> {
   Widget mapUserToHome(BuildContext context, AppUser? user) {
     if (user == null) return Auth();
     if (user!.id == _fakeUser) return SplashScreen();
-    return TabBarPages(currentUser: user,);
+    return TabBarPages(
+      currentUser: user,
+    );
   }
-
-
-
-
-
-
-
-
 }

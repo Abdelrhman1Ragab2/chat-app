@@ -8,9 +8,9 @@ import '../providers/friend_provider.dart';
 
 class FriendsScreen extends StatelessWidget {
   final AppUser currentUser;
-  FriendsScreen({Key? key,required this.currentUser}) : super(key: key);
+
+  FriendsScreen({Key? key, required this.currentUser}) : super(key: key);
   static const routeName = "FriendsScreen";
-  bool isAdd=false;
 
   @override
   Widget build(BuildContext context) {
@@ -75,7 +75,9 @@ class FriendsScreen extends StatelessWidget {
               "Search",
               style: TextStyle(fontSize: 16),
             ),
-            SizedBox(width: 5,),
+            SizedBox(
+              width: 5,
+            ),
             Icon(Icons.search),
           ],
         ),
@@ -84,31 +86,34 @@ class FriendsScreen extends StatelessWidget {
   }
 
   Widget friendDetailsBody(BuildContext context) {
+    final email=searchController.text;
     return StreamBuilder<AppUser>(
         stream: Provider.of<UserProvider>(context, listen: false)
-            .getFriendsStream(searchController.text),
+            .getFriendsStream(email),
         builder: (context, snapshot) {
           if (snapshot.hasData) {
             AppUser newFriend = snapshot.data!;
-            return _profileDetails(context,newFriend);
+            return _profileDetails(context, newFriend);
           }
           if (snapshot.hasError) {
-            return const SizedBox();
-            //return Text(snapshot.error.toString());
+           return const SizedBox();
           } else {
-            return const Text("waiting...");
+            return const Center(
+              child: CircularProgressIndicator(),
+            );
           }
         });
   }
 
   Widget _profileDetails(BuildContext context, AppUser newFriend) {
-    return  Container(
+    bool isFriend=currentUser.friends.contains(newFriend.id);
+    return Container(
       width: 250,
       child: Card(
           elevation: 8,
           clipBehavior: Clip.antiAlias,
           shape:
-          RoundedRectangleBorder(borderRadius: BorderRadius.circular(32)),
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(32)),
           child: Padding(
             padding: const EdgeInsets.all(10.0),
             child: Column(
@@ -140,25 +145,45 @@ class FriendsScreen extends StatelessWidget {
                 const SizedBox(
                   height: 8,
                 ),
-                Container(
-                  width: 150,
-                  child: MaterialButton(onPressed: ()async{
-                    await Provider.of<FriendProvider>(context,listen: false).updateFiends(currentUser,newFriend.id);
-                    //Provider.of<FriendProvider>(context,listen: false).showFriendsSearch(false);
-                    isAdd=true;
+                MaterialButton(
+                  onPressed: ()  {
+                    if (!isFriend) {
+                       Provider.of<FriendProvider>(context,
+                              listen: false)
+                          .updateFiends(currentUser, newFriend.id);
 
+                    } else {
+                       Provider.of<FriendProvider>(context,
+                          listen: false)
+                          .deleteFiends(currentUser, newFriend.id);
 
+                    }
+                    Navigator.pop(context);
                   },
-                    elevation: 20,
-                    color: Theme.of(context).secondaryHeaderColor,
+                  elevation: 10,
+                  color: isFriend?
+                  Theme.of(context).primaryColor:Theme.of(context).secondaryHeaderColor,
+                  child: Container(
+                    width: 100,
                     child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Text(isAdd?"done!":"add Friend"),
-                       const SizedBox(width: 5,),
-                         Icon(isAdd?Icons.done:Icons.add)
+                        Text(isFriend
+                            ? "Friend!"
+                            : "add Friend",
+                        style: TextStyle(color: isFriend?Colors.white:Colors.black,),),
+                        const SizedBox(
+                          width: 5,
+                        ),
+                        Icon(isFriend
+                            ? Icons.done
+                            : Icons.add,
+                        color: isFriend?Colors.white:Colors.black,
+                        )
                       ],
-                    ),),
-                )
+                    ),
+                  ),
+                ),
               ],
             ),
           )),

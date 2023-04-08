@@ -7,6 +7,7 @@ import 'package:provider/provider.dart';
 
 import '../providers/authinticat.dart';
 import '../providers/tab_bar_provider.dart';
+import '../widget/drawer.dart';
 import 'call_page.dart';
 import 'chats_page.dart';
 import 'friends_page.dart';
@@ -82,9 +83,7 @@ class _TabBarPagesState extends State<TabBarPages>
                     .changeTab(index),
           ),
         ),
-        drawer: Drawer(
-          backgroundColor: Color.fromARGB(255, 13, 40, 82),
-        ),
+        drawer: MyDrawer(currentUser: widget.currentUser),
         body: TabBarView(
           controller: tabController,
           children: [

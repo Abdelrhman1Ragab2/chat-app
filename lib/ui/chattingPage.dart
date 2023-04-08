@@ -37,9 +37,9 @@ class CattingPage extends StatelessWidget {
           ],
         ),
         body: Container(
-          decoration: BoxDecoration(
-              image: DecorationImage(
-                  image: NetworkImage(appUser.imgUrl), fit: BoxFit.fitHeight)),
+          // decoration: BoxDecoration(
+          //     image: DecorationImage(
+          //         image: NetworkImage(appUser.imgUrl), fit: BoxFit.fitHeight)),
           width: double.maxFinite,
           height: double.maxFinite,
           child: Column(
