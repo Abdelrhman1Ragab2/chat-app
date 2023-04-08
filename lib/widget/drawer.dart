@@ -123,7 +123,7 @@ class MyDrawer extends StatelessWidget {
           Navigator.pushNamed(context, drawerOptions.routeName);
         },
         child: Card(
-          elevation: 15,
+          elevation: 2,
           child: ListTile(
             leading: Icon(drawerOptions.icon),
             title: Text(
