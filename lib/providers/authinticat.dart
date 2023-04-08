@@ -19,18 +19,26 @@ class AuthProvider with ChangeNotifier {
   String? userName;
   num? phone;
   bool isLogin = false;
+  bool isError=false;
   String?errorMessage="";
+  bool isLoading=false;
 
-  void onSubmit() {
+  void onSubmit() async{
     bool isValid = formKey.currentState!.validate();
     if (isValid) {
       formKey.currentState!.save();
-
+      isLoading=true;
       try{
-        isLogin ?signIn(email!, pass!) : signUp(email!, pass!);
+
+        isLogin ?
+        await signIn(email!, pass!) :
+        await signUp(email!, pass!);
+
       }
-      catch(e){
-        errorMessage= e.toString();
+      on FirebaseException catch(error){
+        errorMessage= error.code;
+        isLoading=false;
+        isError=true;
       }
     }
 

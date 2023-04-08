@@ -1,6 +1,7 @@
 import 'package:chat_if/providers/authinticat.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 
 class Auth extends StatefulWidget {
@@ -11,25 +12,27 @@ class Auth extends StatefulWidget {
 }
 
 class _AuthState extends State<Auth> {
-  String?errorMessage="";
+  String? errorMessage = "";
+
   @override
   Widget build(BuildContext context) {
     var pro = Provider.of<AuthProvider>(context);
     return Scaffold(
-      body: buildBody(context,pro)
-    );
+        backgroundColor: Theme.of(context).primaryColor,
+        body: buildBody(context, pro));
   }
-  Widget buildBody(BuildContext context,pro)
-  {
+
+  Widget buildBody(BuildContext context, pro) {
     return Center(
       child: Card(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(20),
+        ),
         margin: const EdgeInsets.all(20),
-        elevation: 50,
+        elevation: 20,
         child: Form(
-
           key: pro.formKey,
           child: Container(
-
             height: 400,
             padding: EdgeInsets.all(25),
             child: SingleChildScrollView(
@@ -71,22 +74,43 @@ class _AuthState extends State<Auth> {
                       },
                     ),
                   const SizedBox(
-                    height: 10,
+                    height: 40,
                   ),
                   MaterialButton(
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    color: Theme.of(context).primaryColor.withOpacity(0.8),
                     onPressed: () {
-                       Provider.of<AuthProvider>(context, listen: false)
+                      Provider.of<AuthProvider>(context, listen: false)
                           .onSubmit();
                     },
-                    child: Text(pro.isLogin?"Sign In":"Sign Up"),
+                    child: Padding(
+                      padding: EdgeInsets.all(10),
+                      child: Text(
+                        pro.isLogin ? "  Sign In  " : "  Sign Up  ",
+                        style:
+                            GoogleFonts.acme(color: Colors.white, fontSize: 18),
+                      ),
+                    ),
                   ),
-                  Text(pro.errorMessage),
+                  pro.isLoading?const Center(child: CircularProgressIndicator(),):const SizedBox(),
+                  SizedBox(height:pro.isError?10:5 ),
+                  pro.isError?Text(pro.errorMessage,style: const TextStyle(color: Colors.red),):const SizedBox(),
+                  SizedBox(height:pro.isError?10:5 ),
                   MaterialButton(
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10),
+                      //set border radius more than 50% of height and width to make circle
+                    ),
+                    color: Theme.of(context).secondaryHeaderColor,
                     onPressed: () {
                       Provider.of<AuthProvider>(context, listen: false)
                           .logOrSign();
                     },
-                    child: Text(pro.isLogin?"You don't have account?":"already have account"),
+                    child: Text(pro.isLogin
+                        ? " You don't have account? "
+                        : " already have account? "),
                   )
                 ],
               ),
