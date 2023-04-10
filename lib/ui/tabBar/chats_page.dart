@@ -5,10 +5,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
-import '../model/message.dart';
-import '../model/users.dart';
-import '../providers/message_provider.dart';
-import 'chattingPage.dart';
+import '../../model/chats.dart';
+import '../../model/message.dart';
+import '../../model/users.dart';
+import '../../providers/chat_provider.dart';
+import '../../providers/message_provider.dart';
+import '../chattingPage.dart';
 
 class ChatsPage extends StatelessWidget {
   final AppUser currentUser;
@@ -27,23 +29,31 @@ class ChatsPage extends StatelessWidget {
   }
 
   Widget chatsBody(BuildContext ctx) {
-    return Container(
-      // height: 600,
-      child: ListView.separated(
-        itemBuilder: (context, index) =>
-            buildItem(ctx, currentUser.friends[index]),
-        separatorBuilder: (context, index) => const SizedBox(
-          height: 5,
-        ),
-        itemCount: currentUser.friends.length,
-      ),
-    );
+    return StreamBuilder(
+      stream: Provider.of<ChatProvider>(ctx,listen: false).getChatStream(),
+        builder: (context, snapshot) {
+          if(snapshot.hasData){
+            List<Chat> chats=snapshot.data!;
+            return Container(
+            // height: 600,
+            child: ListView.separated(
+              itemBuilder: (context, index) =>
+                  buildItem(ctx, chats[index]),
+              separatorBuilder: (context, index) => const SizedBox(
+                height: 5,
+              ),
+              itemCount: currentUser.chats.length,
+            ),
+          );}
+          return const SizedBox();
+
+        });
   }
 
-  Widget buildItem(
-      BuildContext context, String friendsId) {
+  Widget buildItem(BuildContext context, Chat chat) {
+    String friendId = getFriendId(chat);
     return StreamBuilder(
-        stream: Provider.of<UserProvider>(context).getUserStreamById(friendsId),
+        stream: Provider.of<UserProvider>(context).getUserStreamById(friendId),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(
@@ -63,7 +73,7 @@ class ChatsPage extends StatelessWidget {
                           Message.messageReceiver: friend
                         });
                   },
-                  child: bodyItem(context,friend)),
+                  child: bodyItem(context, friend)),
             );
           }
 
@@ -76,9 +86,10 @@ class ChatsPage extends StatelessWidget {
         });
   }
 
-  Widget bodyItem(BuildContext context,AppUser friend) {
-      return StreamBuilder<List<Message>>(
-        stream: Provider.of<MessageProvider>(context, listen: false).getMessageStream(
+  Widget bodyItem(BuildContext context, AppUser friend) {
+    return StreamBuilder<List<Message>>(
+        stream: Provider.of<MessageProvider>(context, listen: false)
+            .getMessageStream(
           receiverId: friend.id,
           senderId: currentUser.id,
         ),
@@ -94,15 +105,16 @@ class ChatsPage extends StatelessWidget {
               senderId: currentUser.id,
               receiverId: friend.id,
             );
-            Message? lastMessage=data.first;
-            bool useTime= dayOrTime(lastMessage);
+            //if(data.isEmpty)return SizedBox();
+            Message? lastMessage = data.isEmpty?null:data.first;
+            bool? useTime = dayOrTime(lastMessage);
 
             return Row(
               children: [
                 imagePrtBody(friend),
                 const SizedBox(width: 5),
-                nameAndLastMessageBody(friend,lastMessage),
-                datePartBody(useTime,lastMessage)
+                nameAndLastMessageBody(friend, lastMessage),
+                lastMessage==null?SizedBox():datePartBody(useTime, lastMessage)
               ],
             );
           }
@@ -115,8 +127,8 @@ class ChatsPage extends StatelessWidget {
           return const Text("start chat!...");
         });
   }
-  Widget imagePrtBody(AppUser friend)
-  {
+
+  Widget imagePrtBody(AppUser friend) {
     return Stack(
       alignment: Alignment.bottomRight,
       children: [
@@ -136,9 +148,9 @@ class ChatsPage extends StatelessWidget {
     );
   }
 
-  Widget nameAndLastMessageBody(AppUser friend ,Message lastMessage)
-  {
-    return Container(width: 225,
+  Widget nameAndLastMessageBody(AppUser friend, Message? lastMessage) {
+    return Container(
+      width: 225,
       padding: const EdgeInsets.only(top: 10, bottom: 10),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -147,34 +159,43 @@ class ChatsPage extends StatelessWidget {
             friend.name,
             style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
           ),
-          const SizedBox(height:8),
-          SizedBox(width: 225, child: Text(lastMessage.text,style: const TextStyle(fontSize: 12),
-            overflow: TextOverflow.ellipsis,)),
+          const SizedBox(height: 8),
+          SizedBox(
+              width: 225,
+              child: Text(
+                lastMessage==null?"":lastMessage.text,
+                style: const TextStyle(fontSize: 12),
+                overflow: TextOverflow.ellipsis,
+              )),
         ],
       ),
     );
   }
 
-  Widget datePartBody(bool useTime,Message lastMessage)
-  {
-    return  Container(
+
+  Widget datePartBody(bool? useTime, Message lastMessage) {
+    return Container(
       padding: const EdgeInsets.only(top: 10),
       alignment: Alignment.topLeft,
-      child: Text(useTime?
-      (DateFormat.jm().format(lastMessage.createdAt.toDate())):
-      (DateFormat.yMd().format(lastMessage.createdAt.toDate()))
-
-
-      ),
+      child: Text(useTime!
+          ? (DateFormat.jm().format(lastMessage.createdAt.toDate()))
+          : (DateFormat.yMd().format(lastMessage.createdAt.toDate()))),
     );
   }
 
-  bool dayOrTime(Message lastMessage){
-    if(lastMessage.createdAt.toDate().day==DateTime.now().day
-        &&lastMessage.createdAt.toDate().month==DateTime.now().month
-        &&lastMessage.createdAt.toDate().year==DateTime.now().year)
-    {return true;}
+  bool? dayOrTime(Message? lastMessage) {
+    if(lastMessage==null) return null;
+    if (lastMessage!.createdAt.toDate().day == DateTime.now().day &&
+        lastMessage!.createdAt.toDate().month == DateTime.now().month &&
+        lastMessage!.createdAt.toDate().year == DateTime.now().year) {
+      return true;
+    }
     return false;
+  }
+  String getFriendId(Chat chat)
+  {
+    if(chat.userAId==currentUser.id) return chat.userBId;
+    return chat.userAId;
   }
 
 }

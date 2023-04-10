@@ -1,3 +1,4 @@
+import 'package:chat_if/model/chats.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class AppUser {
@@ -6,51 +7,49 @@ class AppUser {
   String email;
   String imgUrl;
   final List<String> friends;
-  String  phone;
-  //{
-  // id:"idddddddddd"
-  // lasttime:55
-  // active:true
-  // }
+  final List<String> friendsRequest;
+  final List<String> chats;
+  String phone;
 
-  AppUser({required this.id,
+  AppUser({
+    required this.id,
     required this.name,
     required this.email,
     this.friends = const [],
+    this.friendsRequest = const [],
+    this.chats = const [],
     required this.imgUrl,
-    required this.phone,});
-
+    required this.phone,
+  });
 
   static Map<String, dynamic> toFirebase(
-      AppUser user,
-      SetOptions? options,
-      ) {
+    AppUser user,
+    SetOptions? options,
+  ) {
     return {
       _userIdKey: user.id,
-      _usernameKey:user.name,
+      _usernameKey: user.name,
       userEmailKey: user.email,
       userFriendsKey: user.friends,
       _userImageUrlKey: user.imgUrl,
       _userPhoneNumberKey: user.phone,
-
-
+      userChatsKey: user.chats,
+      friendsRequestsKey: user.friendsRequest,
     };
   }
 
   static AppUser fromFirebase(DocumentSnapshot ds, SnapshotOptions? options) {
-
     return AppUser(
       id: ds.id,
       email: ds.get(userEmailKey),
       friends: (ds.get(userFriendsKey) as List).cast(),
-      imgUrl:  ds.get(_userImageUrlKey),
-      name:  ds.get(_usernameKey),
-      phone: ds.get(_userPhoneNumberKey)
-
-
+      chats: (ds.get(userChatsKey) as List).cast(),
+      imgUrl: ds.get(_userImageUrlKey),
+      name: ds.get(_usernameKey),
+      phone: ds.get(_userPhoneNumberKey),
+      friendsRequest: (ds.get(friendsRequestsKey) as List).cast(),
     );
   }
-
 
   static const String _userIdKey = "id";
   static const String _usernameKey = "name";
@@ -58,6 +57,6 @@ class AppUser {
   static const String _userImageUrlKey = "imageUrl";
   static const String _userPhoneNumberKey = "phone";
   static const String userFriendsKey = "friends";
-
-
+  static const String userChatsKey = "chats";
+  static const String friendsRequestsKey = "friends request";
 }

@@ -5,7 +5,7 @@ import '../model/message.dart';
 
 class MessageProvider with ChangeNotifier {
   final _messageCollection = FirebaseFirestore.instance
-      .collection("chat")
+      .collection("message")
       .withConverter(
           fromFirestore: Message.fromFirebase, toFirestore: Message.toFirebase);
  

@@ -1,4 +1,5 @@
 import 'package:chat_if/providers/authinticat.dart';
+import 'package:chat_if/providers/chat_provider.dart';
 import 'package:chat_if/providers/friend_provider.dart';
 import 'package:chat_if/providers/message_provider.dart';
 import 'package:chat_if/providers/tab_bar_provider.dart';
@@ -18,6 +19,8 @@ void main() async {
     ChangeNotifierProvider(create: (_) =>AuthProvider()),
     ChangeNotifierProvider(create: (_) =>MessageProvider()),
     ChangeNotifierProvider(create: (_) =>FriendProvider()),
+    ChangeNotifierProvider(create: (_) =>ChatProvider()),
+
 
 
 

@@ -27,12 +27,13 @@ class AuthProvider with ChangeNotifier {
     bool isValid = formKey.currentState!.validate();
     if (isValid) {
       formKey.currentState!.save();
-      isLoading=true;
-      try{
 
+      try{
+        isLoading=true;
         isLogin ?
         await signIn(email!, pass!) :
         await signUp(email!, pass!);
+        isLoading=false;
 
       }
       on FirebaseException catch(error){
