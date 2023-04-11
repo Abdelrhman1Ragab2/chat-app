@@ -1,4 +1,3 @@
-
 import 'package:chat_if/providers/user_provider.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -30,23 +29,23 @@ class ChatsPage extends StatelessWidget {
 
   Widget chatsBody(BuildContext ctx) {
     return StreamBuilder(
-      stream: Provider.of<ChatProvider>(ctx,listen: false).getChatStream(),
+        stream: Provider.of<ChatProvider>(ctx, listen: false).getChatStream(),
         builder: (context, snapshot) {
-          if(snapshot.hasData){
-            List<Chat> chats=snapshot.data!;
+          if (snapshot.hasData) {
+            List<Chat> chats = Provider.of<ChatProvider>(ctx, listen: false)
+                .filteringChat(snapshot.data!, currentUser);
             return Container(
-            // height: 600,
-            child: ListView.separated(
-              itemBuilder: (context, index) =>
-                  buildItem(ctx, chats[index]),
-              separatorBuilder: (context, index) => const SizedBox(
-                height: 5,
+              // height: 600,
+              child: ListView.separated(
+                itemBuilder: (context, index) => buildItem(ctx, chats[index]),
+                separatorBuilder: (context, index) => const SizedBox(
+                  height: 5,
+                ),
+                itemCount: currentUser.chats.length, // edit after add remove chat to currentUser.chats.length
               ),
-              itemCount: currentUser.chats.length,
-            ),
-          );}
+            );
+          }
           return const SizedBox();
-
         });
   }
 
@@ -106,7 +105,7 @@ class ChatsPage extends StatelessWidget {
               receiverId: friend.id,
             );
             //if(data.isEmpty)return SizedBox();
-            Message? lastMessage = data.isEmpty?null:data.first;
+            Message? lastMessage = data.isEmpty ? null : data.first;
             bool? useTime = dayOrTime(lastMessage);
 
             return Row(
@@ -114,7 +113,9 @@ class ChatsPage extends StatelessWidget {
                 imagePrtBody(friend),
                 const SizedBox(width: 5),
                 nameAndLastMessageBody(friend, lastMessage),
-                lastMessage==null?SizedBox():datePartBody(useTime, lastMessage)
+                lastMessage == null
+                    ? const SizedBox()
+                    : datePartBody(useTime, lastMessage)
               ],
             );
           }
@@ -142,7 +143,8 @@ class ChatsPage extends StatelessWidget {
           height: 13,
           width: 13,
           decoration: BoxDecoration(
-              color: Colors.green, borderRadius: BorderRadius.circular(8)),
+              color: friend.isOnline?Colors.green:Colors.grey,
+              borderRadius: BorderRadius.circular(8)),
         ),
       ],
     );
@@ -163,7 +165,7 @@ class ChatsPage extends StatelessWidget {
           SizedBox(
               width: 225,
               child: Text(
-                lastMessage==null?"":lastMessage.text,
+                lastMessage == null ? "" : lastMessage.text,
                 style: const TextStyle(fontSize: 12),
                 overflow: TextOverflow.ellipsis,
               )),
@@ -171,7 +173,6 @@ class ChatsPage extends StatelessWidget {
       ),
     );
   }
-
 
   Widget datePartBody(bool? useTime, Message lastMessage) {
     return Container(
@@ -184,7 +185,7 @@ class ChatsPage extends StatelessWidget {
   }
 
   bool? dayOrTime(Message? lastMessage) {
-    if(lastMessage==null) return null;
+    if (lastMessage == null) return null;
     if (lastMessage!.createdAt.toDate().day == DateTime.now().day &&
         lastMessage!.createdAt.toDate().month == DateTime.now().month &&
         lastMessage!.createdAt.toDate().year == DateTime.now().year) {
@@ -192,9 +193,9 @@ class ChatsPage extends StatelessWidget {
     }
     return false;
   }
-  String getFriendId(Chat chat)
-  {
-    if(chat.userAId==currentUser.id) return chat.userBId;
+
+  String getFriendId(Chat chat) {
+    if (chat.userAId == currentUser.id) return chat.userBId;
     return chat.userAId;
   }
 

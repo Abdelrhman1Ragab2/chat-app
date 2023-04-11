@@ -1,4 +1,5 @@
 import 'package:chat_if/model/users.dart';
+import 'package:chat_if/providers/chat_provider.dart';
 import 'package:chat_if/providers/friend_provider.dart';
 import 'package:chat_if/providers/message_provider.dart';
 import 'package:chat_if/providers/user_provider.dart';
@@ -52,7 +53,7 @@ class CattingPage extends StatelessWidget {
               const SizedBox(
                 height: 3,
               ),
-              textFieldBody(context, friend.id, appUser)
+              textFieldBody(context, friend, appUser)
             ],
           ),
         ));
@@ -183,7 +184,7 @@ class CattingPage extends StatelessWidget {
     );
   }
 
-  Widget textFieldBody(BuildContext context, String friendId, AppUser user) {
+  Widget textFieldBody(BuildContext context, AppUser friend, AppUser user) {
     return Container(
       height: 50,
       child: Row(
@@ -229,14 +230,19 @@ class CattingPage extends StatelessWidget {
                 IconButton(
                   onPressed: () {
 
-                    Provider.of<FriendProvider>(context,listen: false).sortFiendsList(user, friendId);
+                    Provider.of<FriendProvider>(context,listen: false).sortFiendsList(user, friend.id);
 
                     Provider.of<MessageProvider>(context, listen: false)
                         .addMessage(Message(
+                            id: "",
                             createdAt: Timestamp.now(),
-                            receiverId: friendId,
+                            receiverId: friend.id,
                             senderId: user.id,
                             text: controller.text));
+                    if(!friend.chats.contains(user.id))
+                      {
+                        Provider.of<ChatProvider>(context, listen: false).updateFiends(friend, user.id);
+                      }
                     controller.clear();
                   },
                   icon: Icon(Icons.send),

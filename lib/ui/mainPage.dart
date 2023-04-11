@@ -15,6 +15,7 @@ import 'package:provider/provider.dart';
 import 'package:rxdart/rxdart.dart';
 
 import 'auth.dart';
+import 'drawer_options/friendes_requests.dart';
 import 'tabBar/call_page.dart';
 import 'tabBar/chats_page.dart';
 import 'chattingPage.dart';
@@ -22,7 +23,7 @@ import 'drawer_options/photos.dart';
 import 'drawer_options/profile.dart';
 import 'drawer_options/settings.dart';
 import 'drawer_options/videos.dart';
-import 'friends_page.dart';
+import 'friends_search.dart';
 
 class MainPage extends StatefulWidget {
   const MainPage({Key? key}) : super(key: key);
@@ -44,7 +45,10 @@ class _MainPageState extends State<MainPage> {
             name: "fake",
             imgUrl: "",
             friends: [],
-            email: ""),
+            email: "",
+            isOnline: true,
+            friendsRequest: [],
+            chats: []),
         stream: Provider.of<UserProvider>(context, listen: false)
             .getCurrentUserStream(),
         builder: (context, snapshot) {
@@ -66,7 +70,7 @@ class _MainPageState extends State<MainPage> {
               theme: ThemeData(
                   primaryColor: const Color.fromARGB(255, 26, 64, 126),
                   accentColor: const Color.fromARGB(255, 127, 172, 181),
-                  appBarTheme: const  AppBarTheme(
+                  appBarTheme: const AppBarTheme(
                     color: Color.fromARGB(255, 13, 40, 82),
                   )),
               routes: {
@@ -75,12 +79,15 @@ class _MainPageState extends State<MainPage> {
                 StatusPage.routeName: (context) => StatusPage(),
                 CallPage.routeName: (context) => CallPage(),
                 CattingPage.routeName: (context) => CattingPage(),
-                FriendsScreen.routeName: (context) =>FriendsScreen(currentUser: user!),
+                FriendsScreen.routeName: (context) =>
+                    FriendsScreen(currentUser: user!),
                 FileOption.routeName: (context) => FileOption(),
                 VideoOption.routeName: (context) => VideoOption(),
-                PhotoOption.routeName:(context)=>PhotoOption(),
-                ProfileOption.routeName:(context)=>ProfileOption(),
-                SettingOption.routeName:(context)=>SettingOption(),
+                PhotoOption.routeName: (context) => PhotoOption(),
+                ProfileOption.routeName: (context) => ProfileOption(),
+                SettingOption.routeName: (context) => SettingOption(),
+                FriendsRequests.routeName: (context) =>
+                    FriendsRequests(currentUser: user!),
               },
               home: mapUserToHome(context, user));
         });

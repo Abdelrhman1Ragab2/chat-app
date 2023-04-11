@@ -86,7 +86,7 @@ class FriendsScreen extends StatelessWidget {
   }
 
   Widget friendDetailsBody(BuildContext context) {
-    final email=searchController.text;
+    final email = searchController.text;
     return StreamBuilder<AppUser>(
         stream: Provider.of<UserProvider>(context, listen: false)
             .getFriendsStream(email),
@@ -96,7 +96,7 @@ class FriendsScreen extends StatelessWidget {
             return _profileDetails(context, newFriend);
           }
           if (snapshot.hasError) {
-           return const SizedBox();
+            return const SizedBox();
           } else {
             return const Center(
               child: CircularProgressIndicator(),
@@ -106,7 +106,8 @@ class FriendsScreen extends StatelessWidget {
   }
 
   Widget _profileDetails(BuildContext context, AppUser newFriend) {
-    bool isFriend=currentUser.friends.contains(newFriend.id);
+    bool isFriend = currentUser.friends.contains(newFriend.id);
+    bool isRequest = newFriend.friendsRequest.contains(currentUser.id);
     return Container(
       width: 250,
       child: Card(
@@ -146,39 +147,47 @@ class FriendsScreen extends StatelessWidget {
                   height: 8,
                 ),
                 MaterialButton(
-                  onPressed: ()  {
-                    if (!isFriend) {
-                       Provider.of<FriendProvider>(context,
-                              listen: false)
-                          .updateFiends(currentUser, newFriend.id);
-
-                    } else {
-                       Provider.of<FriendProvider>(context,
-                          listen: false)
-                          .deleteFiends(currentUser, newFriend.id);
-
+                  onPressed: () {
+                    if (!isFriend)
+                    {
+                      if (!isRequest) {
+                        Provider.of<FriendProvider>(context, listen: false)
+                            .updateFiendsRequests(newFriend, currentUser.id);
+                      } else {
+                        Provider.of<FriendProvider>(context, listen: false)
+                            .deleteFiendsRequests(newFriend, currentUser.id);
+                      }
+                      Navigator.pop(context);
                     }
-                    Navigator.pop(context);
+
                   },
                   elevation: 10,
-                  color: isFriend?
-                  Theme.of(context).primaryColor:Theme.of(context).secondaryHeaderColor,
+                  color: isFriend
+                      ? Theme.of(context).primaryColor
+                      : Theme.of(context).secondaryHeaderColor,
                   child: Container(
-                    width: 100,
-                    child: Row(
+                    width: 120,
+                    child: isFriend
+                        ? Text(
+                      "Friend",
+                      style: TextStyle(
+                        color: isFriend ? Colors.white : Colors.black,
+                      ),
+                    ):Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Text(isFriend
-                            ? "Friend!"
-                            : "add Friend",
-                        style: TextStyle(color: isFriend?Colors.white:Colors.black,),),
+                        Text(
+                                isRequest ? "request sent" : "add Friend",
+                                style: TextStyle(
+                                  color: isFriend ? Colors.white : Colors.black,
+                                ),
+                              ),
                         const SizedBox(
                           width: 5,
                         ),
-                        Icon(isFriend
-                            ? Icons.done
-                            : Icons.add,
-                        color: isFriend?Colors.white:Colors.black,
+                        Icon(
+                          isRequest ? Icons.done : Icons.add,
+                          color: isFriend ? Colors.white : Colors.black,
                         )
                       ],
                     ),

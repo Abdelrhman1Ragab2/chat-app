@@ -8,6 +8,7 @@ import 'package:provider/provider.dart';
 
 import '../model/options.dart';
 import '../ui/drawer_options/files.dart';
+import '../ui/drawer_options/friendes_requests.dart';
 import '../ui/drawer_options/profile.dart';
 import '../ui/drawer_options/settings.dart';
 import '../ui/drawer_options/videos.dart';
@@ -17,6 +18,8 @@ class MyDrawer extends StatelessWidget {
 
   MyDrawer({Key? key, required this.currentUser}) : super(key: key);
   List<DrawerOptions> options = [
+    DrawerOptions(
+        lable: "Friend Requests", icon: Icons.request_page, routeName: FriendsRequests.routeName),
     DrawerOptions(
         lable: "Photos", icon: Icons.photo, routeName: PhotoOption.routeName),
     DrawerOptions(

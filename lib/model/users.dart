@@ -9,6 +9,7 @@ class AppUser {
   final List<String> friends;
   final List<String> friendsRequest;
   final List<String> chats;
+  bool isOnline;
   String phone;
 
   AppUser({
@@ -20,6 +21,7 @@ class AppUser {
     this.chats = const [],
     required this.imgUrl,
     required this.phone,
+    required this.isOnline,
   });
 
   static Map<String, dynamic> toFirebase(
@@ -48,6 +50,7 @@ class AppUser {
       name: ds.get(_usernameKey),
       phone: ds.get(_userPhoneNumberKey),
       friendsRequest: (ds.get(friendsRequestsKey) as List).cast(),
+      isOnline: ds.get(userOnlineKey)
     );
   }
 
@@ -59,4 +62,5 @@ class AppUser {
   static const String userFriendsKey = "friends";
   static const String userChatsKey = "chats";
   static const String friendsRequestsKey = "friends request";
+  static const String userOnlineKey = "online";
 }

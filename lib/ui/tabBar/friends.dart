@@ -17,15 +17,15 @@ class Friends extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        listBody(),
+        listBodyFriends(),
         const SizedBox(
-          height: 60,
-        )
+          height: 50,
+        ),
       ],
     );
   }
 
-  Widget listBody() {
+  Widget listBodyFriends() {
     return Expanded(
       child: ListView.separated(
           itemBuilder: (context, index) =>
@@ -134,43 +134,39 @@ class Friends extends StatelessWidget {
                     const SizedBox(
                       width: 5,
                     ),
-                    InkWell(
-                      onTap: () {
-                        Provider.of<ChatProvider>(context,listen: false).crateChat(Chat(
-                            id: "",
-                            messages: [],
-                            userAId: currentUser.id,
-                            userBId: friend.id,
-                            isUserAIsActive: true,
-                            isUserBIsActive: false));
-                      },
-                      child: Card(
-                        elevation: 15,
-                        shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(16)),
-                        color: Theme.of(context).secondaryHeaderColor,
-                        child: Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              const Text(
-                                "Start chat",
-                                style: TextStyle(
-                                    color: Colors.black, fontSize: 16),
+                    currentUser.chats.contains(friend.id)
+                        ? const SizedBox()
+                        : InkWell(
+                            onTap: () async{
+                               await startChat(context,friend);
+                            },
+                            child: Card(
+                              elevation: 15,
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(16)),
+                              color: Theme.of(context).secondaryHeaderColor,
+                              child: Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    const Text(
+                                      "Start chat",
+                                      style: TextStyle(
+                                          color: Colors.black, fontSize: 16),
+                                    ),
+                                    const SizedBox(
+                                      width: 5,
+                                    ),
+                                    Icon(
+                                      Icons.chat_sharp,
+                                      color: Theme.of(context).primaryColor,
+                                    )
+                                  ],
+                                ),
                               ),
-                              const SizedBox(
-                                width: 5,
-                              ),
-                              Icon(
-                                Icons.chat_sharp,
-                                color: Theme.of(context).primaryColor,
-                              )
-                            ],
+                            ),
                           ),
-                        ),
-                      ),
-                    ),
                   ],
                 ),
               ],
@@ -178,4 +174,25 @@ class Friends extends StatelessWidget {
           )),
     );
   }
+  Future<void > startChat(BuildContext context,AppUser friend)
+  async{
+    if(friend.chats.contains(currentUser.id)){
+      await Provider.of<ChatProvider>(context, listen: false)
+          .updateFiends(currentUser, friend.id);
+    }// my friend crate chat no need to crate a new chat
+    else{
+      await Provider.of<ChatProvider>(context, listen: false)
+          .crateChat(Chat(
+          id: "",
+          messages: [],
+          userAId: currentUser.id,
+          userBId: friend.id,
+      ));
+
+      await Provider.of<ChatProvider>(context, listen: false)
+          .updateFiends(currentUser, friend.id);
+    }
+
+  }
+
 }

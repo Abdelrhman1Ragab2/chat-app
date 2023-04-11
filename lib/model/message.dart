@@ -1,13 +1,14 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class Message {
-
+  String id;
   String text;
   Timestamp createdAt;
   String senderId;
   String receiverId;
 
   Message({
+    required this.id,
     required this.text,
     required this.senderId,
     required this.receiverId,
@@ -25,7 +26,9 @@ class Message {
   }
 
   static Message fromFirebase(DocumentSnapshot ds, SnapshotOptions? options) {
-    return Message(text: ds.get(messageText),
+    return Message(
+        id:ds.id,
+        text: ds.get(messageText),
         senderId: ds.get(messageSender),
         receiverId: ds.get(messageReceiver),
         createdAt: ds.get(messageCreatedAt));

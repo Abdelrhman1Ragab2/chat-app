@@ -10,7 +10,7 @@ import '../../providers/tab_bar_provider.dart';
 import '../../widget/drawer.dart';
 import 'call_page.dart';
 import 'chats_page.dart';
-import '../friends_page.dart';
+import '../friends_search.dart';
 import 'friends.dart';
 
 class TabBarPages extends StatefulWidget {

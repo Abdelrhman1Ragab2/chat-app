@@ -62,6 +62,7 @@ class AuthProvider with ChangeNotifier {
       name: userName!,
       phone: "01550886075",
       friends: [],
+      isOnline: true,
     );
     await _addNewUser(newUser);
   }
@@ -72,11 +73,18 @@ class AuthProvider with ChangeNotifier {
 
   Future<void> signIn(String email, String password) async {
     await _auth.signInWithEmailAndPassword(email: email, password: password);
+    await _userCollection
+        .doc(_auth.currentUser!.uid)
+        .update({AppUser.userOnlineKey: true });
     notifyListeners();
   }
 
   Future<void> signOut() async {
+    await _userCollection
+        .doc(_auth.currentUser!.uid)
+        .update({AppUser.userOnlineKey: false });
     await _auth.signOut();
+
     notifyListeners();
   }
 
