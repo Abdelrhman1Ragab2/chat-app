@@ -49,7 +49,7 @@ class _TabBarPagesState extends State<TabBarPages>
                                 spreadRadius: 2,
                                 offset: Offset.fromDirection(-1, -2)),
                           ],
-                          borderRadius: BorderRadius.all(Radius.circular(20))),
+                          borderRadius: const BorderRadius.all(Radius.circular(20))),
                       width: currentIndexs==0?160:140,
                       child: MaterialButton(
                         child: Text(

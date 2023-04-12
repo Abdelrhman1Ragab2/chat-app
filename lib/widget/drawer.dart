@@ -63,10 +63,11 @@ class MyDrawer extends StatelessWidget {
     return Container(
       padding: EdgeInsets.all(2),
       width: double.maxFinite,
-      decoration: const BoxDecoration(
+      decoration:  BoxDecoration(
           image: DecorationImage(
-              image: NetworkImage(/*currentUser.imgUrl*/
-                  "https://expertphotography.b-cdn.net/wp-content/uploads/2020/08/social-media-profile-photos-3.jpg"),
+              image: NetworkImage(currentUser.imgUrl
+                 // "https://expertphotography.b-cdn.net/wp-content/uploads/2020/08/social-media-profile-photos-3.jpg"
+     ),
               fit: BoxFit.cover)),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.end,
@@ -120,7 +121,7 @@ class MyDrawer extends StatelessWidget {
       BuildContext context, DrawerOptions drawerOptions, int index) {
     return InkWell(
         onTap: () {
-          if (index == 5) {
+          if (index == 6) {
             Provider.of<AuthProvider>(context, listen: false).signOut();
           }
           Navigator.pushNamed(context, drawerOptions.routeName);

@@ -8,6 +8,13 @@ class MessageProvider with ChangeNotifier {
       .collection("message")
       .withConverter(
           fromFirestore: Message.fromFirebase, toFirestore: Message.toFirebase);
+
+ Message? bottomMessage;
+
+ crateBottomMessage(Message message){
+   bottomMessage=message;
+   notifyListeners();
+ }
  
 
   Future<void> addMessage(Message message) async {

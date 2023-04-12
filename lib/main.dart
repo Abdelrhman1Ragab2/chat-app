@@ -1,3 +1,5 @@
+import 'package:camera/camera.dart';
+import 'package:chat_if/providers/ImageProvider.dart';
 import 'package:chat_if/providers/authinticat.dart';
 import 'package:chat_if/providers/chat_provider.dart';
 import 'package:chat_if/providers/friend_provider.dart';
@@ -13,6 +15,7 @@ import 'package:provider/provider.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
+  final cameras =await availableCameras();
   runApp(MultiProvider(providers: [
     ChangeNotifierProvider(create: (_) => UserProvider()),
     ChangeNotifierProvider(create: (_) => TabBarProvider()),
@@ -20,18 +23,20 @@ void main() async {
     ChangeNotifierProvider(create: (_) =>MessageProvider()),
     ChangeNotifierProvider(create: (_) =>FriendProvider()),
     ChangeNotifierProvider(create: (_) =>ChatProvider()),
+    ChangeNotifierProvider(create: (_) =>ImagingProvider()),
 
 
 
 
-  ], child: MyApp()));
+  ], child: MyApp(cameras: cameras,)));
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({Key? key}) : super(key: key);
+  final cameras;
+  const MyApp({Key? key ,required this.cameras}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return MainPage();
+    return MainPage(cameras: cameras,);
   }
 }

@@ -33,7 +33,7 @@ class AppUser {
       _usernameKey: user.name,
       userEmailKey: user.email,
       userFriendsKey: user.friends,
-      _userImageUrlKey: user.imgUrl,
+      userImageUrlKey: user.imgUrl,
       _userPhoneNumberKey: user.phone,
       userChatsKey: user.chats,
       friendsRequestsKey: user.friendsRequest,
@@ -46,7 +46,7 @@ class AppUser {
       email: ds.get(userEmailKey),
       friends: (ds.get(userFriendsKey) as List).cast(),
       chats: (ds.get(userChatsKey) as List).cast(),
-      imgUrl: ds.get(_userImageUrlKey),
+      imgUrl: ds.get(userImageUrlKey),
       name: ds.get(_usernameKey),
       phone: ds.get(_userPhoneNumberKey),
       friendsRequest: (ds.get(friendsRequestsKey) as List).cast(),
@@ -57,7 +57,7 @@ class AppUser {
   static const String _userIdKey = "id";
   static const String _usernameKey = "name";
   static const String userEmailKey = "email";
-  static const String _userImageUrlKey = "imageUrl";
+  static const String userImageUrlKey = "imageUrl";
   static const String _userPhoneNumberKey = "phone";
   static const String userFriendsKey = "friends";
   static const String userChatsKey = "chats";

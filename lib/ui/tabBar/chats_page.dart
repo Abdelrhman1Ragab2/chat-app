@@ -69,7 +69,8 @@ class ChatsPage extends StatelessWidget {
                     Navigator.pushNamed(context, CattingPage.routeName,
                         arguments: {
                           Message.messageSender: currentUser,
-                          Message.messageReceiver: friend
+                          Message.messageReceiver: friend,
+                          "readMessage":true,
                         });
                   },
                   child: bodyItem(context, friend)),
@@ -135,7 +136,8 @@ class ChatsPage extends StatelessWidget {
       children: [
         CircleAvatar(
           backgroundImage: NetworkImage(
-            "https://picsum.photos/seed/${friend.id}/200",
+              friend.imgUrl,
+
           ),
           radius: 28,
         ),
@@ -162,10 +164,16 @@ class ChatsPage extends StatelessWidget {
             style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
           ),
           const SizedBox(height: 8),
-          SizedBox(
+          if(lastMessage!=null)
+          lastMessage!.image?Row(
+            children: const [
+              Icon(Icons.photo),
+              Text("Photo")
+            ],
+          ):SizedBox(
               width: 225,
               child: Text(
-                lastMessage == null ? "" : lastMessage.text,
+                 lastMessage.text,
                 style: const TextStyle(fontSize: 12),
                 overflow: TextOverflow.ellipsis,
               )),

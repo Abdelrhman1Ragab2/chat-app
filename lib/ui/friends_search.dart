@@ -157,7 +157,7 @@ class FriendsScreen extends StatelessWidget {
                         Provider.of<FriendProvider>(context, listen: false)
                             .deleteFiendsRequests(newFriend, currentUser.id);
                       }
-                      Navigator.pop(context);
+                     // Navigator.pop(context);
                     }
 
                   },

@@ -5,16 +5,13 @@ import 'package:chat_if/ui/drawer_options/files.dart';
 import 'package:chat_if/ui/splash_screen.dart';
 import 'package:chat_if/ui/tabBar/status_page.dart';
 import 'package:chat_if/ui/tabBar/tapBarPages.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:rxdart/rxdart.dart';
 
 import 'auth.dart';
+import 'camer_ui.dart';
 import 'drawer_options/friendes_requests.dart';
 import 'tabBar/call_page.dart';
 import 'tabBar/chats_page.dart';
@@ -26,7 +23,8 @@ import 'drawer_options/videos.dart';
 import 'friends_search.dart';
 
 class MainPage extends StatefulWidget {
-  const MainPage({Key? key}) : super(key: key);
+  final cameras;
+  const MainPage({Key? key,required this.cameras}) : super(key: key);
   static const routeName = "MainPage";
 
   @override
@@ -74,7 +72,7 @@ class _MainPageState extends State<MainPage> {
                     color: Color.fromARGB(255, 13, 40, 82),
                   )),
               routes: {
-                MainPage.routeName: (context) => MainPage(),
+                MainPage.routeName: (context) => MainPage(cameras: widget.cameras),
                 ChatsPage.routeName: (context) => ChatsPage(currentUser: user!),
                 StatusPage.routeName: (context) => StatusPage(),
                 CallPage.routeName: (context) => CallPage(),
@@ -84,10 +82,13 @@ class _MainPageState extends State<MainPage> {
                 FileOption.routeName: (context) => FileOption(),
                 VideoOption.routeName: (context) => VideoOption(),
                 PhotoOption.routeName: (context) => PhotoOption(),
-                ProfileOption.routeName: (context) => ProfileOption(),
+                ProfileOption.routeName: (context) => ProfileOption(
+                      currentUser: user!,
+                    ),
                 SettingOption.routeName: (context) => SettingOption(),
                 FriendsRequests.routeName: (context) =>
                     FriendsRequests(currentUser: user!),
+                CameraUi.routeName:(context)=>CameraUi(cameras: widget.cameras),
               },
               home: mapUserToHome(context, user));
         });

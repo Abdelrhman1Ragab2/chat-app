@@ -11,7 +11,7 @@ class FriendsRequests extends StatelessWidget {
 
   const FriendsRequests({Key? key, required this.currentUser})
       : super(key: key);
-  static const routeName = "FriendsRequests";
+  static const routeName = "Friends Requests";
 
   @override
   Widget build(BuildContext context) {
