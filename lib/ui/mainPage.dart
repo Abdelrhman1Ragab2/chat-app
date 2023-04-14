@@ -10,6 +10,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../widget/bottom_sheet.dart';
 import 'auth.dart';
 import 'camer_ui.dart';
 import 'drawer_options/friendes_requests.dart';
@@ -62,7 +63,6 @@ class _MainPageState extends State<MainPage> {
           }
 
           final AppUser? user = snapshot.data;
-          print(user);
           return MaterialApp(
               debugShowCheckedModeBanner: false,
               theme: ThemeData(

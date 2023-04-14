@@ -1,5 +1,6 @@
 import 'package:camera/camera.dart';
 import 'package:chat_if/providers/ImageProvider.dart';
+import 'package:chat_if/providers/animation_provider.dart';
 import 'package:chat_if/providers/authinticat.dart';
 import 'package:chat_if/providers/chat_provider.dart';
 import 'package:chat_if/providers/friend_provider.dart';
@@ -24,6 +25,7 @@ void main() async {
     ChangeNotifierProvider(create: (_) =>FriendProvider()),
     ChangeNotifierProvider(create: (_) =>ChatProvider()),
     ChangeNotifierProvider(create: (_) =>ImagingProvider()),
+    ChangeNotifierProvider(create: (_)=>AnimationProvider()),
 
 
 

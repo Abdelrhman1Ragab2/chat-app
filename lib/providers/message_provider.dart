@@ -9,16 +9,24 @@ class MessageProvider with ChangeNotifier {
       .withConverter(
           fromFirestore: Message.fromFirebase, toFirestore: Message.toFirebase);
 
- Message? bottomMessage;
-
- crateBottomMessage(Message message){
-   bottomMessage=message;
+ Message? replyMessage;
+bool isReply=false;
+ crateReplyMessage(Message? message){
+   isReply=true;
+   replyMessage=message;
    notifyListeners();
  }
+  closeReplyMessage(){
+    isReply=false;
+    notifyListeners();
+  }
  
 
   Future<void> addMessage(Message message) async {
     await _messageCollection.doc().set(message);
+  }
+  Future<void> deleteMessage(String messageId) async {
+    await _messageCollection.doc(messageId).delete();
   }
 
   Stream<List<Message>> getMessageStream({required String senderId,required String receiverId}) {

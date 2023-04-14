@@ -12,7 +12,8 @@ class ImagingProvider with ChangeNotifier{
 
   final _imagesRef = FirebaseStorage.instance.ref("images");
   final _user = FirebaseAuth.instance.currentUser;
-  bool takingImage=false;
+   bool takingImage=false;
+
 
   void takingImages(bool taking)
   {
