@@ -24,7 +24,8 @@ class ChatProvider with ChangeNotifier {
   }
 
   Stream<List<Chat>> getChatStream() {
-    return _chatCollection
+    Query<Chat> query= _chatCollection.orderBy(Chat.chatLastUpdateKey,descending: true);
+    return query
         .snapshots()
         .map((event) => event.docs.map((e) => e.data()).toList());
   }
@@ -35,9 +36,6 @@ class ChatProvider with ChangeNotifier {
   List<Chat> filteringChat(List<Chat> chats, AppUser currentUser) {
     List<Chat> newChats = [];
     for (var element in chats) {
-      // if (element.userAId == currentUserId ||
-      //     element.userBId== currentUserId  )
-      //  {newChats.add(element);}
       if (
       (currentUser.chats.contains(element.userAId)||currentUser.chats.contains(element.userBId)
           &&
@@ -55,5 +53,10 @@ class ChatProvider with ChangeNotifier {
     return await _userCollection
         .doc(user.id)
         .update({AppUser.userChatsKey: chats });
+  }
+
+  Future<void> updateChat(String chatId,{var key ,var value})
+  async {
+     return await _chatCollection.doc(chatId).update({key:value});
   }
 }

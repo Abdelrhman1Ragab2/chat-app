@@ -1,5 +1,8 @@
+import 'package:chat_if/model/status.dart';
 import 'package:chat_if/model/users.dart';
+import 'package:chat_if/providers/status_provider.dart';
 import 'package:chat_if/ui/tabBar/status_page.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -36,7 +39,7 @@ class _TabBarPagesState extends State<TabBarPages>
 
     return Scaffold(
         floatingActionButton:
-        currentIndexs<2
+        currentIndexs==0
                 ? Card(
                     shape: const CircleBorder(),
                     elevation: 20,
@@ -72,7 +75,19 @@ class _TabBarPagesState extends State<TabBarPages>
                 onPressed: () {
                   Provider.of<AuthProvider>(context, listen: false).signOut();
                 },
-                icon: Icon(Icons.logout))
+                icon: Icon(Icons.logout)),
+            IconButton(
+                onPressed: () {
+                  Provider.of<StatusProvider>(context, listen: false).crateStatus(
+                    Status(id: "",
+                        userId: widget.currentUser.id ,
+                        content: widget.currentUser.imgUrl,
+                        isImage: true, time: Timestamp.now(),
+                        friendViews: [],
+                        friendCanViews: widget.currentUser.friends)
+                  );
+                },
+                icon: Icon(Icons.add)),
           ],
           title: const Text("Chat App"),
           bottom: TabBar(
@@ -103,7 +118,7 @@ class _TabBarPagesState extends State<TabBarPages>
           children: [
             Friends(currentUser: widget.currentUser),
             ChatsPage(currentUser: widget.currentUser),
-            StatusPage(),
+            StatusPage(currentUser: widget.currentUser),
             CallPage()
           ],
         ));

@@ -111,8 +111,8 @@ class FriendsList extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       imagePrtBody(context, friend.imgUrl),
-                      const SizedBox(width: 10),
-                      friendNameBody(context, friend.name)
+                      const SizedBox(width: 5),
+                      Expanded(child: friendNameBody(context, friend.name))
                     ],
                   ),
                 ),
@@ -136,8 +136,8 @@ class FriendsList extends StatelessWidget {
                       },
                       child: Container(
                         padding: const EdgeInsets.all(10),
-                        child: Text(
-                          "send to ${friend.name}"
+                        child:const  Text(
+                          "Send"
                           ,
                           style: TextStyle(
                               color: Colors.white
@@ -178,7 +178,7 @@ class FriendsList extends StatelessWidget {
       name,
       overflow: TextOverflow.ellipsis,
       style: TextStyle(
-        fontSize: 20,
+        fontSize: 16,
         color: Theme
             .of(context)
             .primaryColor,

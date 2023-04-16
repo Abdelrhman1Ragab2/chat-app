@@ -1,5 +1,6 @@
 import 'package:chat_if/model/users.dart';
 import 'package:chat_if/providers/chat_provider.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -187,6 +188,9 @@ class Friends extends StatelessWidget {
           messages: [],
           userAId: currentUser.id,
           userBId: friend.id,
+        lastUpdate: Timestamp.now(),
+        userAActive: true,
+        userBActive: false
       ));
 
       await Provider.of<ChatProvider>(context, listen: false)

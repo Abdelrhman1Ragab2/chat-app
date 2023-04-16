@@ -11,6 +11,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../widget/bottom_sheet.dart';
+import '../widget/story_page.dart';
 import 'auth.dart';
 import 'camer_ui.dart';
 import 'drawer_options/friendes_requests.dart';
@@ -74,7 +75,7 @@ class _MainPageState extends State<MainPage> {
               routes: {
                 MainPage.routeName: (context) => MainPage(cameras: widget.cameras),
                 ChatsPage.routeName: (context) => ChatsPage(currentUser: user!),
-                StatusPage.routeName: (context) => StatusPage(),
+                StatusPage.routeName: (context) => StatusPage(currentUser: user!),
                 CallPage.routeName: (context) => CallPage(),
                 CattingPage.routeName: (context) => CattingPage(),
                 FriendsScreen.routeName: (context) =>
@@ -89,6 +90,7 @@ class _MainPageState extends State<MainPage> {
                 FriendsRequests.routeName: (context) =>
                     FriendsRequests(currentUser: user!),
                 CameraUi.routeName:(context)=>CameraUi(cameras: widget.cameras),
+                DelayedPage.routeName:(context)=>DelayedPage(),
               },
               home: mapUserToHome(context, user));
         });

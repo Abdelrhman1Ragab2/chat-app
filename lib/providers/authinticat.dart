@@ -76,7 +76,6 @@ class AuthProvider with ChangeNotifier {
     await _userCollection
         .doc(_auth.currentUser!.uid)
         .update({AppUser.userOnlineKey: true });
-    notifyListeners();
   }
 
   Future<void> signOut() async {
@@ -85,7 +84,6 @@ class AuthProvider with ChangeNotifier {
         .update({AppUser.userOnlineKey: false });
     await _auth.signOut();
 
-    notifyListeners();
   }
 
   void logOrSign() {

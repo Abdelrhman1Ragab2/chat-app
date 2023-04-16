@@ -2,27 +2,36 @@ import 'package:chat_if/model/users.dart';
 import 'package:chat_if/providers/chat_provider.dart';
 import 'package:chat_if/providers/friend_provider.dart';
 import 'package:chat_if/providers/message_provider.dart';
-import 'package:chat_if/providers/user_provider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
-
+import '../model/chats.dart';
 import '../model/message.dart';
 import '../providers/tab_bar_provider.dart';
 import '../widget/bottom_sheet.dart';
 import 'camer_ui.dart';
 
-class CattingPage extends StatelessWidget {
+class CattingPage extends StatefulWidget {
   CattingPage({
     Key? key,
   }) : super(key: key);
   static const routeName = "CattingPage";
 
+  @override
+  State<CattingPage> createState() => _CattingPageState();
+}
+
+class _CattingPageState extends State<CattingPage> {
   TextEditingController controller = TextEditingController();
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -30,17 +39,17 @@ class CattingPage extends StatelessWidget {
         ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
     AppUser friend = routeArg[Message.messageReceiver];
     AppUser appUser = routeArg[Message.messageSender];
+    Chat chat = routeArg["chat"];
 
     return Scaffold(
       appBar: appBarBody(context, friend, appUser),
-      body: buildBody(context, friend, appUser),
+      body: buildBody(context, friend, appUser, chat),
     );
   }
 
-  PreferredSizeWidget? appBarBody(
-      BuildContext context, AppUser friend, AppUser appUser) {
+  PreferredSizeWidget? appBarBody(BuildContext context, AppUser friend, AppUser appUser) {
     return AppBar(
-      backgroundColor: Color.fromARGB(255, 13, 40, 82),
+      backgroundColor: const Color.fromARGB(255, 13, 40, 82),
       centerTitle: true,
       leadingWidth: 250,
       leading: leadingContainer(context, friend),
@@ -52,7 +61,8 @@ class CattingPage extends StatelessWidget {
     );
   }
 
-  Widget buildBody(BuildContext context, AppUser friend, AppUser appUser) {
+  Widget buildBody(
+      BuildContext context, AppUser friend, AppUser appUser, Chat chat) {
     return InkWell(
       splashColor: Colors.white,
       onTap: () {
@@ -73,8 +83,7 @@ class CattingPage extends StatelessWidget {
             const SizedBox(
               height: 3,
             ),
-
-                 bottomPartBody(context, friend, appUser)
+            bottomPartBody(context, friend, appUser, chat)
           ],
         ),
       ),
@@ -122,19 +131,20 @@ class CattingPage extends StatelessWidget {
   }
 
   Widget leadingContainer(BuildContext context, AppUser friend) {
-    return Container(
-      width: 80,
-      child: Row(
-        children: [
-          backIcon(context),
-          imagePrtBody(friend),
-          const SizedBox(width: 10),
-          Text(
+    return Row(
+      children: [
+        backIcon(context),
+        imagePrtBody(friend),
+        const SizedBox(width: 10),
+        SizedBox(
+          width: 130,
+          child: Text(
             friend.name,
-            style: TextStyle(fontSize: 18),
+            style: const TextStyle(fontSize: 14),
+            overflow: TextOverflow.ellipsis,
           ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 
@@ -184,64 +194,11 @@ class CattingPage extends StatelessWidget {
                     ? CrossAxisAlignment.start
                     : CrossAxisAlignment.end,
                 children: [
-                  message.image
-                      ? SizedBox(
-                          height: 300,
-                          width: 250,
-                          child: Card(
-                            elevation: 0,
-                            child: Image.network(
-                              message.text,
-                              fit: BoxFit.cover,
-                              height: 300,
-                              width: 250,
-                            ),
-                          ))
-                      : Container(
-                          padding:
-                              const EdgeInsets.only(top: 5, left: 5, right: 5),
-                          child: SelectableText(
-                            message.text,
-                            style: TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.w500,
-                              color: isSender ? Colors.black : Colors.white,
-                            ),
-                            //style: TextStyle(color: Colors.white),
-                            toolbarOptions: const ToolbarOptions(
-                              cut: true,
-                              paste: true,
-                              copy: true,
-                              selectAll: true,
-                            ),
-                          ),
-                        ),
+                  messageContent(message, isSender),
                   const SizedBox(
                     height: 3,
                   ),
-                  Row(
-                    mainAxisAlignment: !isSender
-                        ? MainAxisAlignment.start
-                        : MainAxisAlignment.end,
-                    crossAxisAlignment: CrossAxisAlignment.end,
-                    children: [
-                      Text(
-                        (DateFormat.jm().format(message.createdAt.toDate())),
-                        textAlign: TextAlign.end,
-                        style: const TextStyle(
-                            fontSize: 12,
-                            color: Colors.white60,
-                            fontWeight: FontWeight.w500),
-                      ),
-                      const SizedBox(height: 3),
-                      if (isSender)
-                        Icon(
-                          Icons.done,
-                          color: isReadMessage! ? Colors.blue : Colors.white,
-                          size: 16,
-                        )
-                    ],
-                  )
+                  messageTimeBody(message, isSender, isReadMessage, friend)
                 ],
               ),
             ),
@@ -251,14 +208,73 @@ class CattingPage extends StatelessWidget {
     );
   }
 
-  Widget bottomPartBody(BuildContext context, AppUser friend, AppUser user) {
+  Widget messageContent(Message message, bool isSender) {
+    return message.image
+        ? SizedBox(
+            height: 300,
+            width: 250,
+            child: Card(
+              elevation: 0,
+              child: Image.network(
+                message.text,
+                fit: BoxFit.cover,
+                height: 300,
+                width: 250,
+              ),
+            ))
+        : Container(
+            padding: const EdgeInsets.only(top: 5, left: 5, right: 5),
+            child: SelectableText(
+              message.text,
+              style: TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.w500,
+                color: isSender ? Colors.black : Colors.white,
+              ),
+              //style: TextStyle(color: Colors.white),
+              toolbarOptions: const ToolbarOptions(
+                cut: true,
+                paste: true,
+                copy: true,
+                selectAll: true,
+              ),
+            ),
+          );
+  }
+
+  Widget messageTimeBody(
+      Message message, bool isSender, bool? isReadMessage, AppUser friend) {
+    return Row(
+      mainAxisAlignment:
+          !isSender ? MainAxisAlignment.start : MainAxisAlignment.end,
+      crossAxisAlignment: CrossAxisAlignment.end,
+      children: [
+        Text(
+          (DateFormat.jm().format(message.createdAt.toDate())),
+          textAlign: TextAlign.end,
+          style: const TextStyle(
+              fontSize: 12, color: Colors.white60, fontWeight: FontWeight.w500),
+        ),
+        const SizedBox(height: 3),
+        if (isSender)
+          const Icon(
+            Icons.done,
+            color: Colors.white,
+            size: 16,
+          )
+      ],
+    );
+  }
+
+  Widget bottomPartBody(
+      BuildContext context, AppUser friend, AppUser user, Chat chat) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.end,
       children: [
         recordBody(),
         const SizedBox(width: 8),
-        inputBody(context, user, friend),
+        inputBody(context, user, friend, chat),
       ],
     );
   }
@@ -282,7 +298,8 @@ class CattingPage extends StatelessWidget {
     );
   }
 
-  Widget inputBody(BuildContext context, AppUser user, AppUser friend) {
+  Widget inputBody(
+      BuildContext context, AppUser user, AppUser friend, Chat chat) {
     return Container(
       width: 290,
       decoration: BoxDecoration(
@@ -298,10 +315,9 @@ class CattingPage extends StatelessWidget {
               replyMessageBody(context),
             Row(
               children: [
-                cameraIconBody(context,user,friend),
+                cameraIconBody(context, user, friend),
                 textFieldBody(),
-                senIconBody(context,user,friend),
-
+                senIconBody(context, user, friend, chat),
               ],
             ),
           ],
@@ -310,62 +326,59 @@ class CattingPage extends StatelessWidget {
     );
   }
 
-  Widget replyMessageBody(BuildContext context){
-    return Stack(alignment: Alignment.topRight,
-        children: [
-          Container(
-            width: 290,
-            height: 48,
-            decoration: const BoxDecoration(
-              color: Color.fromARGB(255, 40, 70, 122),
+  Widget replyMessageBody(BuildContext context) {
+    return Stack(alignment: Alignment.topRight, children: [
+      Container(
+        width: 290,
+        height: 48,
+        decoration: const BoxDecoration(
+          color: Color.fromARGB(255, 40, 70, 122),
+        ),
+        child: Center(
+            child: SizedBox(
+          width: 280,
+          child: Text(
+            Provider.of<MessageProvider>(context).replyMessage!.text,
+            overflow: TextOverflow.ellipsis,
+            style: const TextStyle(
+              color: Colors.white,
+              fontSize: 18,
             ),
-            child: Center(
-                child: SizedBox(
-                  width: 280,
-                  child: Text(
-                    Provider.of<MessageProvider>(context).replyMessage!.text,
-                    overflow: TextOverflow.ellipsis,
-                    style: const TextStyle(
-                      color: Colors.white,
-                      fontSize: 18,
-                    ),
-                  ),
-                )),
           ),
-          IconButton(
-              onPressed: () {
-                Provider.of<MessageProvider>(context,listen: false).closeReplyMessage();
-              },
-              icon: const Icon(
-                Icons.close,
-                size: 18,
-                color: Colors.white,
-              ))
-        ]);
+        )),
+      ),
+      IconButton(
+          onPressed: () {
+            Provider.of<MessageProvider>(context, listen: false)
+                .closeReplyMessage();
+          },
+          icon: const Icon(
+            Icons.close,
+            size: 18,
+            color: Colors.white,
+          ))
+    ]);
   }
 
-  Widget cameraIconBody(BuildContext context,AppUser user,AppUser friend)
-  {
+  Widget cameraIconBody(BuildContext context, AppUser user, AppUser friend) {
     return IconButton(
         onPressed: () async {
-          Navigator.pushNamed(context, CameraUi.routeName,
-              arguments: {
-                "userId": user.id,
-                "friendId": friend.id,
-              });
+          Navigator.pushNamed(context, CameraUi.routeName, arguments: {
+            "userId": user.id,
+            "friendId": friend.id,
+          });
         },
         icon: const Icon(Icons.camera_alt));
   }
 
-  Widget senIconBody(BuildContext context,AppUser user,AppUser friend)
-  {
+  Widget senIconBody(
+      BuildContext context, AppUser user, AppUser friend, Chat chat) {
     return IconButton(
       onPressed: () {
         Provider.of<FriendProvider>(context, listen: false)
             .sortFiendsList(user, friend.id);
 
-        Provider.of<MessageProvider>(context, listen: false)
-            .addMessage(Message(
+        Provider.of<MessageProvider>(context, listen: false).addMessage(Message(
           id: "",
           createdAt: Timestamp.now(),
           receiverId: friend.id,
@@ -377,6 +390,8 @@ class CattingPage extends StatelessWidget {
           Provider.of<ChatProvider>(context, listen: false)
               .updateFiends(friend, user.id);
         }
+        Provider.of<ChatProvider>(context, listen: false).updateChat(chat.id);
+
         controller.clear();
       },
       icon: const Icon(Icons.send),
@@ -386,8 +401,7 @@ class CattingPage extends StatelessWidget {
     );
   }
 
-  Widget textFieldBody()
-  {
+  Widget textFieldBody() {
     return SizedBox(
       width: 170,
       child: TextFormField(

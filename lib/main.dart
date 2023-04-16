@@ -5,6 +5,7 @@ import 'package:chat_if/providers/authinticat.dart';
 import 'package:chat_if/providers/chat_provider.dart';
 import 'package:chat_if/providers/friend_provider.dart';
 import 'package:chat_if/providers/message_provider.dart';
+import 'package:chat_if/providers/status_provider.dart';
 import 'package:chat_if/providers/tab_bar_provider.dart';
 import 'package:chat_if/providers/user_provider.dart';
 import 'package:chat_if/ui/mainPage.dart';
@@ -26,11 +27,14 @@ void main() async {
     ChangeNotifierProvider(create: (_) =>ChatProvider()),
     ChangeNotifierProvider(create: (_) =>ImagingProvider()),
     ChangeNotifierProvider(create: (_)=>AnimationProvider()),
+    ChangeNotifierProvider(create: (_)=>StatusProvider()),
 
 
+  ],
+      child: MyApp(cameras: cameras)
 
-
-  ], child: MyApp(cameras: cameras,)));
+  )
+  );
 }
 
 class MyApp extends StatelessWidget {

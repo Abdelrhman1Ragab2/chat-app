@@ -71,6 +71,7 @@ class ChatsPage extends StatelessWidget {
                           Message.messageSender: currentUser,
                           Message.messageReceiver: friend,
                           "readMessage":true,
+                          "chat":chat,
                         });
                   },
                   child: bodyItem(context, friend)),
