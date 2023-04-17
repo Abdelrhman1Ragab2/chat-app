@@ -32,23 +32,23 @@ class _DelayedPageState extends State<DelayedPage> {
         ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
     List<Status> status = routeArg["status"];
     fullList(status);
-    AppUser friend = routeArg["appUser"];
+    AppUser appUser = routeArg["appUser"];
     return Scaffold(
       appBar: AppBar(
-        leading: leadingContainer(context, friend),
+        leading: leadingContainer(context, appUser),
         leadingWidth: 250,
       ),
       body: storyBody(),
     );
   }
 
-  Widget leadingContainer(BuildContext context, AppUser friend) {
+  Widget leadingContainer(BuildContext context, AppUser appUser) {
     return Row(
       children: [
         backIcon(context),
-        imagePrtBody(friend),
+        imagePrtBody(appUser),
         const SizedBox(width: 10),
-        friendName(friend)
+        friendName(appUser)
       ],
     );
   }
@@ -85,6 +85,7 @@ class _DelayedPageState extends State<DelayedPage> {
 
   Widget storyBody() {
     return SizedBox(
+      height: double.maxFinite,
       child: StoryView(
         onComplete: (){
           storyItems.clear();
@@ -99,14 +100,16 @@ class _DelayedPageState extends State<DelayedPage> {
   void fullList(List<Status> status)
   {
     for (var element in status) {
-      storyListed(element.content);
+      storyListed(element);
     }
   }
-  List<StoryItem> storyListed(String content)
+  List<StoryItem> storyListed(Status status)
   {
     setState(() {
       storyItems.add(StoryItem.pageImage(
-          url: content,
+        imageFit: BoxFit.contain,
+          caption:status.caption,
+          url: status.content,
           controller: storyController,
           duration: const Duration(seconds: 5)));
     });

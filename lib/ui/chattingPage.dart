@@ -12,7 +12,7 @@ import '../model/chats.dart';
 import '../model/message.dart';
 import '../providers/tab_bar_provider.dart';
 import '../widget/bottom_sheet.dart';
-import 'camer_ui.dart';
+import '../camera/camer_ui.dart';
 
 class CattingPage extends StatefulWidget {
   CattingPage({
@@ -47,9 +47,9 @@ class _CattingPageState extends State<CattingPage> {
     );
   }
 
-  PreferredSizeWidget? appBarBody(BuildContext context, AppUser friend, AppUser appUser) {
+  PreferredSizeWidget? appBarBody(
+      BuildContext context, AppUser friend, AppUser appUser) {
     return AppBar(
-      backgroundColor: const Color.fromARGB(255, 13, 40, 82),
       centerTitle: true,
       leadingWidth: 250,
       leading: leadingContainer(context, friend),
@@ -64,13 +64,16 @@ class _CattingPageState extends State<CattingPage> {
   Widget buildBody(
       BuildContext context, AppUser friend, AppUser appUser, Chat chat) {
     return InkWell(
-      splashColor: Colors.white,
       onTap: () {
         if (Provider.of<TabBarProvider>(context, listen: false).showBottomSheet)
           Provider.of<TabBarProvider>(context, listen: false)
               .onShowBottomSheet(showSheet: false);
       },
-      child: SizedBox(
+      child: Container(
+        decoration: const BoxDecoration(
+            image: DecorationImage(
+                fit: BoxFit.cover,
+                image: AssetImage("assets/images/chatting.png"))),
         width: double.maxFinite,
         height: double.maxFinite,
         child: Column(
@@ -109,6 +112,9 @@ class _CattingPageState extends State<CattingPage> {
               senderId: user.id,
               receiverId: friend.id,
             );
+            if (data.isEmpty) {
+              return const SizedBox();
+            }
             bool? isReadMessage = readMessage(data.first, user);
             return ListView.separated(
               reverse: true,
@@ -183,11 +189,11 @@ class _CattingPageState extends State<CattingPage> {
                   topLeft: !isSender ? Radius.zero : const Radius.circular(20),
                   topRight: isSender ? Radius.zero : const Radius.circular(20),
                 )),
-            margin: const EdgeInsets.only(right: 5, left: 5),
+            margin: const EdgeInsets.only(right: 2, left: 2),
             child: Container(
               padding:
-                  const EdgeInsets.only(left: 5, right: 5, bottom: 5, top: 5),
-              width: getWidth(message.text),
+                  const EdgeInsets.only(left: 5, right: 5, bottom: 5,top: 5),
+              width: message.image?280:getWidth(message.text!),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: !isSender
@@ -210,22 +216,31 @@ class _CattingPageState extends State<CattingPage> {
 
   Widget messageContent(Message message, bool isSender) {
     return message.image
-        ? SizedBox(
-            height: 300,
-            width: 250,
-            child: Card(
-              elevation: 0,
-              child: Image.network(
-                message.text,
-                fit: BoxFit.cover,
+        ? Column(
+      crossAxisAlignment: isSender?CrossAxisAlignment.start:CrossAxisAlignment.end,
+          children: [
+            SizedBox(
                 height: 300,
-                width: 250,
-              ),
-            ))
+                width: 265,
+                child: Card(
+                  elevation: 0,
+                  child: Image.network(
+                    message.imgurl!,
+                    fit: BoxFit.cover,
+
+                  ),
+                )),
+            const SizedBox(height: 10),
+            Text(message.text==null?"":message.text!,
+            style: TextStyle(color: isSender ? Colors.black : Colors.white,
+              fontSize: 16
+            ),)
+          ],
+        )
         : Container(
             padding: const EdgeInsets.only(top: 5, left: 5, right: 5),
             child: SelectableText(
-              message.text,
+              message.text!,
               style: TextStyle(
                 fontSize: 16,
                 fontWeight: FontWeight.w500,
@@ -317,7 +332,7 @@ class _CattingPageState extends State<CattingPage> {
               children: [
                 cameraIconBody(context, user, friend),
                 textFieldBody(),
-                senIconBody(context, user, friend, chat),
+                sendIconBody(context, user, friend, chat),
               ],
             ),
           ],
@@ -338,7 +353,7 @@ class _CattingPageState extends State<CattingPage> {
             child: SizedBox(
           width: 280,
           child: Text(
-            Provider.of<MessageProvider>(context).replyMessage!.text,
+            Provider.of<MessageProvider>(context).replyMessage!.text!,
             overflow: TextOverflow.ellipsis,
             style: const TextStyle(
               color: Colors.white,
@@ -363,15 +378,17 @@ class _CattingPageState extends State<CattingPage> {
   Widget cameraIconBody(BuildContext context, AppUser user, AppUser friend) {
     return IconButton(
         onPressed: () async {
-          Navigator.pushNamed(context, CameraUi.routeName, arguments: {
-            "userId": user.id,
-            "friendId": friend.id,
+          Navigator.pushNamed(context, OpenCamera.routeName, arguments: {
+            "user": user,
+            "friend": friend,
+            "forStatus":false,
+
           });
         },
         icon: const Icon(Icons.camera_alt));
   }
 
-  Widget senIconBody(
+  Widget sendIconBody(
       BuildContext context, AppUser user, AppUser friend, Chat chat) {
     return IconButton(
       onPressed: () {
@@ -380,6 +397,7 @@ class _CattingPageState extends State<CattingPage> {
 
         Provider.of<MessageProvider>(context, listen: false).addMessage(Message(
           id: "",
+          imgurl: null,
           createdAt: Timestamp.now(),
           receiverId: friend.id,
           senderId: user.id,

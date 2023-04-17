@@ -174,7 +174,7 @@ class ChatsPage extends StatelessWidget {
           ):SizedBox(
               width: 225,
               child: Text(
-                 lastMessage.text,
+                 lastMessage.text!,
                 style: const TextStyle(fontSize: 12),
                 overflow: TextOverflow.ellipsis,
               )),

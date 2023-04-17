@@ -2,7 +2,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 class Message {
   String id;
-  String text;
+  String? text;
+  String?imgurl;
   Timestamp createdAt;
   String senderId;
   String receiverId;
@@ -11,6 +12,7 @@ class Message {
   Message({
     required this.id,
     required this.text,
+    required this.imgurl,
     required this.senderId,
     required this.receiverId,
     required this.createdAt,
@@ -23,6 +25,7 @@ class Message {
   ) {
     return {
       messageText: message.text,
+      messageImgUrl:message.imgurl,
       messageCreatedAt: message.createdAt,
       messageSender: message.senderId,
       messageReceiver: message.receiverId,
@@ -34,6 +37,7 @@ class Message {
     return Message(
       id: ds.id,
       text: ds.get(messageText),
+      imgurl:  ds.get(messageImgUrl),
       senderId: ds.get(messageSender),
       receiverId: ds.get(messageReceiver),
       createdAt: ds.get(messageCreatedAt),
@@ -41,9 +45,10 @@ class Message {
     );
   }
 
-  static const messageText = "messageText";
+  static const messageText = "Text";
+  static const messageImgUrl = "ImgUrl";
   static const messageCreatedAt = "createdAt";
   static const messageSender = "senderId";
-  static const messageReceiver = " receiverId ";
-  static const messageImage = "image";
+  static const messageReceiver = "receiverId ";
+  static const messageImage = "isImage";
 }

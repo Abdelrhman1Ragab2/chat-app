@@ -127,6 +127,7 @@ class FriendsList extends StatelessWidget {
                         await Provider.of<MessageProvider>(context).addMessage(
                             Message(
                                 id: "",
+                                imgurl: null,
                                 text: message.text,
                                 senderId: currentUser.id,
                                 receiverId: friend.id,

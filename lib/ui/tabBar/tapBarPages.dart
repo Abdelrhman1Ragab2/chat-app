@@ -11,6 +11,7 @@ import 'package:provider/provider.dart';
 import '../../providers/authinticat.dart';
 import '../../providers/tab_bar_provider.dart';
 import '../../widget/drawer.dart';
+import '../../camera/camer_ui.dart';
 import 'call_page.dart';
 import 'chats_page.dart';
 import '../friends_search.dart';
@@ -39,35 +40,48 @@ class _TabBarPagesState extends State<TabBarPages>
 
     return Scaffold(
         floatingActionButton:
-        currentIndexs==0
-                ? Card(
-                    shape: const CircleBorder(),
-                    elevation: 20,
-                    child: Container(
-                      decoration: BoxDecoration(
-                          color: const Color.fromARGB(255, 24, 61, 119),
-                          boxShadow: [
-                            BoxShadow(
-                                color: Colors.blue.shade100,
-                                spreadRadius: 2,
-                                offset: Offset.fromDirection(-1, -2)),
-                          ],
-                          borderRadius: const BorderRadius.all(Radius.circular(20))),
-                      width: currentIndexs==0?160:140,
-                      child: MaterialButton(
-                        child: Text(
-                          currentIndexs==0?
-                          "add new friend":"add new chat",
-                          style: const TextStyle(color: Colors.white, fontSize: 18),
-                        ),
-                        onPressed: () {
-                          currentIndexs==0?
-                          Navigator.pushNamed(context, FriendsScreen.routeName):
-                          Navigator.pushNamed(context, FriendsScreen.routeName);
-                        },
+        currentIndexs==0 || currentIndexs==2
+                ? InkWell(
+                 onTap:(){
+                   if(currentIndexs==0)
+                     {
+                       Navigator.pushNamed(context, FriendsScreen.routeName);
+                     }
+                   else{
+                     Navigator.pushNamed(context, OpenCamera.routeName,
+                     arguments: {
+                       "user":widget.currentUser,
+                       "friend":null,
+                       "forStatus":true,
+                     }
+                     );
+                   }
+                 } ,
+                  child: Card(
+                      shape: const CircleBorder(),
+                      elevation: 20,
+                      child: Container(
+                        padding: const EdgeInsets.all(10),
+                        decoration: BoxDecoration(
+                            color: const Color.fromARGB(255, 24, 61, 119),
+                            boxShadow: [
+                              BoxShadow(
+                                  color: Colors.blue.shade100,
+                                  spreadRadius: 2,
+                                  offset: Offset.fromDirection(-1, -2)),
+                            ],
+                            borderRadius: const BorderRadius.all(Radius.circular(20))),
+                        width: currentIndexs==0?160:140,
+
+                          child: Text(
+                            currentIndexs==0?
+                            "add new friend":"add new story ",
+                            style: const TextStyle(color: Colors.white, fontSize: 18),
+                          ),
+
                       ),
                     ),
-                  )
+                )
                 : const SizedBox(),
         appBar: AppBar(
           actions: [
@@ -76,18 +90,6 @@ class _TabBarPagesState extends State<TabBarPages>
                   Provider.of<AuthProvider>(context, listen: false).signOut();
                 },
                 icon: Icon(Icons.logout)),
-            IconButton(
-                onPressed: () {
-                  Provider.of<StatusProvider>(context, listen: false).crateStatus(
-                    Status(id: "",
-                        userId: widget.currentUser.id ,
-                        content: widget.currentUser.imgUrl,
-                        isImage: true, time: Timestamp.now(),
-                        friendViews: [],
-                        friendCanViews: widget.currentUser.friends)
-                  );
-                },
-                icon: Icon(Icons.add)),
           ],
           title: const Text("Chat App"),
           bottom: TabBar(

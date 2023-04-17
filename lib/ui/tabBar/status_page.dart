@@ -1,7 +1,9 @@
 import 'dart:math';
 
+import 'package:camera/camera.dart';
 import 'package:chat_if/model/users.dart';
 import 'package:chat_if/providers/status_provider.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -10,6 +12,7 @@ import 'package:path/path.dart';
 import 'package:provider/provider.dart';
 
 import '../../model/status.dart';
+import '../../providers/ImageProvider.dart';
 import '../../providers/user_provider.dart';
 import '../../widget/story_page.dart';
 
@@ -45,115 +48,132 @@ class StatusPage extends StatelessWidget {
   Widget dividedBody(BuildContext context, List<Status> status) {
     return Column(
       children: [
-        myStatus(context,status),
+        myStatus(context, status),
+        separatedContainer(context),
         Expanded(child: statusFriendsBody(context, status))
       ],
     );
   }
 
-  Widget myStatus(BuildContext context,List<Status> status) {
-    return Padding(
-      padding: EdgeInsets.all(10),
-      child: Card(
-        color: Colors.white38,
-        elevation: 10,
-          child: Row(
-            children: [
-              myImage(context,status),
-              const SizedBox(
-                width: 5,
-              ),
-              nameBody("My status")
-            ],
+  Widget separatedContainer(BuildContext context) {
+
+    return Container(
+      width: double.infinity,
+      height: 30,
+      color: Theme.of(context).primaryColor,
+      child: const Padding(
+        padding: EdgeInsets.all(5),
+        child: Center(
+            child: Text(
+          "Friends Status",
+          style: TextStyle(
+            color: Colors.white,
+            fontSize: 16,
+            fontWeight: FontWeight.w500
           ),
+        )),
       ),
     );
   }
 
-  Widget myImage(BuildContext context,List<Status> status) {
+  Widget myStatus(BuildContext context, List<Status> status) {
     List<Status> myStatus = getMyStatus(status, currentUser.id);
-    return DottedBorder(
-      strokeWidth: 3,
-      color:  Colors.green.shade600,
-      dashPattern: myStatus.length<=1?[180,0]:[(180)/myStatus.length,5],
-
-      borderType: BorderType.Circle,
-      radius: const Radius.circular(32),
-      padding: const EdgeInsets.all(6),
-      child: InkWell(
-        onTap: (){
-
-          Navigator.pushNamed(context, DelayedPage.routeName,
-              arguments: {
-                "status":myStatus,
-                "appUser":currentUser,
-              }
-          );
-        },
-        child: Container(
-            height: 60,
-            width: 60,
-            decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(30),
-                image:  DecorationImage(
-                  image: NetworkImage(myStatus.isEmpty?currentUser.imgUrl:status[0].content),
-                  fit: BoxFit.fill,
-                )
+    return InkWell(
+      onTap: (){
+        Navigator.pushNamed(context, DelayedPage.routeName, arguments: {
+          "status": myStatus,
+          "appUser": currentUser,
+        });
+      },
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(2, 10, 2, 5),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            myImage(context, myStatus),
+            const SizedBox(
+              width: 5,
             ),
-            child: const SizedBox()
-
+            nameBody("My status")
+          ],
         ),
-      )
+      ),
     );
   }
 
-  Widget statusFriendsBody(BuildContext ctx,List<Status> status) {
+  Widget myImage(BuildContext context, List<Status> myStatus) {
+    return DottedBorder(
+        strokeWidth: 3,
+        color: Colors.green.shade600,
+        dashPattern:
+            myStatus.length <= 1 ? [180, 0] : [(180) / myStatus.length, 5],
+        borderType: BorderType.Circle,
+        radius: const Radius.circular(32),
+        padding: const EdgeInsets.all(6),
+        child: Container(
+              height: 60,
+              width: 60,
+              decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(30),
+                  image: DecorationImage(
+                    image: NetworkImage(myStatus.isEmpty
+                        ? currentUser.imgUrl
+                        : myStatus[0].content),
+                    fit: BoxFit.fill,
+                  )),
+              child: const SizedBox()),
+        );
+  }
+
+  Widget statusFriendsBody(BuildContext ctx, List<Status> status) {
     return ListView.separated(
-      itemBuilder: (context, index) => buildItem(ctx,status,currentUser.friends[index]),
+      itemBuilder: (context, index) =>
+          buildItem(ctx, status, currentUser.friends[index]),
       separatorBuilder: (context, index) => const SizedBox(
         height: 5,
       ),
-      itemCount: status
+      itemCount: currentUser.friends
           .length, // edit after add remove chat to currentUser.chats.length
     );
   }
 
-  Widget buildItem(BuildContext context, List<Status> status,String friendId) {
+  Widget buildItem(BuildContext context, List<Status> status, String friendId) {
     List<Status> myStatus = getMyStatus(status, friendId);
-    return myStatus.isEmpty? const SizedBox():
-     StreamBuilder(
-        stream: Provider.of<UserProvider>(context).getUserStreamById(friendId),
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(
-              child: CircularProgressIndicator(),
-            );
-          }
-          if (snapshot.hasData) {
-            AppUser friend = snapshot.data!;
-            return Container(
-                height: 80,
-                padding: const EdgeInsets.all(3),
-                child: InkWell(
-                    onTap: () async {
-                      Navigator.pushNamed(context, DelayedPage.routeName,
-                          arguments: {
-                           "status":myStatus,
-                           "appUser":friend,
-                          }
-                          );
-                    },
-                    child: bodyItem(context, friend, myStatus)),
-            );
-          }
+    return myStatus.isEmpty
+        ? const SizedBox()
+        : StreamBuilder(
+            stream:
+                Provider.of<UserProvider>(context).getUserStreamById(friendId),
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return const Center(
+                  child: CircularProgressIndicator(),
+                );
+              }
+              if (snapshot.hasData) {
+                AppUser friend = snapshot.data!;
+                return Container(
+                  height: 80,
+                  padding: const EdgeInsets.all(3),
+                  child: InkWell(
+                      onTap: () async {
+                        Navigator.pushNamed(context, DelayedPage.routeName,
+                            arguments: {
+                              "status": myStatus,
+                              "appUser": friend,
+                            });
+                      },
+                      child: bodyItem(context, friend, myStatus)),
+                );
+              }
 
-          if (snapshot.hasData) {
-            return Center(
-              child: Text(snapshot.error.toString()),
-            );
-          }
-          return const SizedBox();
-        });
+              if (snapshot.hasData) {
+                return Center(
+                  child: Text(snapshot.error.toString()),
+                );
+              }
+              return const SizedBox();
+            });
   }
 
   Widget bodyItem(BuildContext context, AppUser friend, List<Status> status) {
@@ -170,9 +190,8 @@ class StatusPage extends StatelessWidget {
   Widget imagePrtBody(List<Status> status, BuildContext context) {
     return DottedBorder(
       strokeWidth: 3,
-      color:  Colors.green.shade600,
-      dashPattern: status.length<=1?[180,0]:[(180)/status.length,5],
-
+      color: Colors.green.shade600,
+      dashPattern: status.length <= 1 ? [180, 0] : [(180) / status.length, 5],
       borderType: BorderType.Circle,
       radius: const Radius.circular(32),
       padding: const EdgeInsets.all(6),

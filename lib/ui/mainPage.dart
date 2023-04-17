@@ -10,10 +10,11 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../camera/caption_page.dart';
 import '../widget/bottom_sheet.dart';
 import '../widget/story_page.dart';
 import 'auth.dart';
-import 'camer_ui.dart';
+import '../camera/camer_ui.dart';
 import 'drawer_options/friendes_requests.dart';
 import 'tabBar/call_page.dart';
 import 'tabBar/chats_page.dart';
@@ -67,10 +68,10 @@ class _MainPageState extends State<MainPage> {
           return MaterialApp(
               debugShowCheckedModeBanner: false,
               theme: ThemeData(
-                  primaryColor: const Color.fromARGB(255, 26, 64, 126),
+                  primaryColor: const Color.fromARGB(255, 22, 53, 103),
                   accentColor: const Color.fromARGB(255, 127, 172, 181),
                   appBarTheme: const AppBarTheme(
-                    color: Color.fromARGB(255, 13, 40, 82),
+                    color: const Color.fromARGB(255, 28, 65, 126),
                   )),
               routes: {
                 MainPage.routeName: (context) => MainPage(cameras: widget.cameras),
@@ -89,8 +90,9 @@ class _MainPageState extends State<MainPage> {
                 SettingOption.routeName: (context) => SettingOption(),
                 FriendsRequests.routeName: (context) =>
                     FriendsRequests(currentUser: user!),
-                CameraUi.routeName:(context)=>CameraUi(cameras: widget.cameras),
+                OpenCamera.routeName:(context)=>OpenCamera(cameras: widget.cameras),
                 DelayedPage.routeName:(context)=>DelayedPage(),
+                CaptionPage.routeName:(context)=>CaptionPage(),
               },
               home: mapUserToHome(context, user));
         });

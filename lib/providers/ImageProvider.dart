@@ -6,6 +6,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 
 import '../model/message.dart';
+import '../model/users.dart';
 import 'message_provider.dart';
 class ImagingProvider with ChangeNotifier{
 
@@ -60,7 +61,7 @@ class ImagingProvider with ChangeNotifier{
   }
 
 
-  Future<void> takePicture(XFile pic,String userId, String friendId) async {
+  Future<void> addImageMessage(XFile pic,String userId, String friendId,String?caption) async {
     takingImages(true);
     final url = await uploadImage(userId, pic);
     if (url != null) {
@@ -72,15 +73,14 @@ class ImagingProvider with ChangeNotifier{
           .set(
           Message(
               id: "",
-              text: url,
+              text: caption,
+              imgurl: url,
               senderId: userId,
               receiverId: friendId,
               createdAt: Timestamp.now(),
               image: true));
 
-      takingImages(false);
     }
-
-
+    takingImages(false);
   }
 }
