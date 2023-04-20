@@ -19,12 +19,11 @@ class ChatsPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-        child: Column(
+    return Column(
       children: [
-        Expanded(child: chatsBody(context)),
+    Expanded(child: chatsBody(context)),
       ],
-    ));
+    );
   }
 
   Widget chatsBody(BuildContext ctx) {
@@ -34,15 +33,25 @@ class ChatsPage extends StatelessWidget {
           if (snapshot.hasData) {
             List<Chat> chats = Provider.of<ChatProvider>(ctx, listen: false)
                 .filteringChat(snapshot.data!, currentUser);
-            return Container(
-              // height: 600,
-              child: ListView.separated(
-                itemBuilder: (context, index) => buildItem(ctx, chats[index]),
-                separatorBuilder: (context, index) => const SizedBox(
-                  height: 5,
-                ),
-                itemCount: currentUser.chats.length, // edit after add remove chat to currentUser.chats.length
+            return chats.isEmpty
+                ?  Padding(
+              padding:  const EdgeInsets.all(20.0),
+              child:  Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Image.asset("assets/images/image.png"),
+                  const SizedBox(height: 30,),
+                  const Text(
+                      "Add friends first and then start the conversation",
+                      style: TextStyle(fontSize: 14,fontWeight: FontWeight.w600)),
+                ],
               ),
+            ):ListView.separated(
+              itemBuilder: (context, index) => buildItem(ctx, chats[index]),
+              separatorBuilder: (context, index) => const SizedBox(
+                height: 5,
+              ),
+              itemCount: currentUser.chats.length, // edit after add remove chat to currentUser.chats.length
             );
           }
           return const SizedBox();
@@ -74,7 +83,7 @@ class ChatsPage extends StatelessWidget {
                           "chat":chat,
                         });
                   },
-                  child: bodyItem(context, friend)),
+                  child: bodyItem(context, friend,chat)),
             );
           }
 
@@ -87,27 +96,18 @@ class ChatsPage extends StatelessWidget {
         });
   }
 
-  Widget bodyItem(BuildContext context, AppUser friend) {
+  Widget bodyItem(BuildContext context, AppUser friend,Chat chat) {
     return StreamBuilder<List<Message>>(
         stream: Provider.of<MessageProvider>(context, listen: false)
-            .getMessageStream(
-          receiverId: friend.id,
-          senderId: currentUser.id,
+            .getMessageStream(chat.id
         ),
         builder: (context, snapshot) {
-          // if (snapshot.connectionState == ConnectionState.waiting) {
-          //   return Center(child: const CircularProgressIndicator());
-          // }
+
           if (snapshot.hasData) {
             var data = snapshot.data;
-            data = Provider.of<MessageProvider>(context, listen: false)
-                .filteringMessage(
-              data!,
-              senderId: currentUser.id,
-              receiverId: friend.id,
-            );
+
             //if(data.isEmpty)return SizedBox();
-            Message? lastMessage = data.isEmpty ? null : data.first;
+            Message? lastMessage = data!.isEmpty ? null : data.first;
             bool? useTime = dayOrTime(lastMessage);
 
             return Row(

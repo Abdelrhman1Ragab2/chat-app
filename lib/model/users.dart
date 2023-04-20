@@ -5,6 +5,7 @@ class AppUser {
   String id;
   String name;
   String email;
+  String? bio;
   String imgUrl;
   final List<String> friends;
   final List<String> friendsRequest;
@@ -16,6 +17,7 @@ class AppUser {
     required this.id,
     required this.name,
     required this.email,
+    required this.bio,
     this.friends = const [],
     this.friendsRequest = const [],
     this.chats = const [],
@@ -29,14 +31,16 @@ class AppUser {
     SetOptions? options,
   ) {
     return {
-      _userIdKey: user.id,
-      _usernameKey: user.name,
+      userIdKey: user.id,
+      usernameKey: user.name,
       userEmailKey: user.email,
+      userBiolKey:user.bio,
       userFriendsKey: user.friends,
       userImageUrlKey: user.imgUrl,
-      _userPhoneNumberKey: user.phone,
+      userPhoneNumberKey: user.phone,
       userChatsKey: user.chats,
       friendsRequestsKey: user.friendsRequest,
+      userOnlineKey:user.isOnline,
     };
   }
 
@@ -44,21 +48,23 @@ class AppUser {
     return AppUser(
       id: ds.id,
       email: ds.get(userEmailKey),
+      bio:  ds.get(userBiolKey),
       friends: (ds.get(userFriendsKey) as List).cast(),
       chats: (ds.get(userChatsKey) as List).cast(),
       imgUrl: ds.get(userImageUrlKey),
-      name: ds.get(_usernameKey),
-      phone: ds.get(_userPhoneNumberKey),
+      name: ds.get(usernameKey),
+      phone: ds.get(userPhoneNumberKey),
       friendsRequest: (ds.get(friendsRequestsKey) as List).cast(),
       isOnline: ds.get(userOnlineKey)
     );
   }
 
-  static const String _userIdKey = "id";
-  static const String _usernameKey = "name";
+  static const String userIdKey = "id";
+  static const String usernameKey = "name";
   static const String userEmailKey = "email";
+  static const String userBiolKey = "bio";
   static const String userImageUrlKey = "imageUrl";
-  static const String _userPhoneNumberKey = "phone";
+  static const String userPhoneNumberKey = "phone";
   static const String userFriendsKey = "friends";
   static const String userChatsKey = "chats";
   static const String friendsRequestsKey = "friends request";

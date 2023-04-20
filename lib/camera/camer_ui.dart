@@ -79,6 +79,7 @@ class _OpenCameraState extends State<OpenCamera> {
       return Scaffold();
     }
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       home: Scaffold(
         body: Container(
           alignment: Alignment.topCenter,
@@ -221,7 +222,7 @@ class _OpenCameraState extends State<OpenCamera> {
         .getImageFile();
     if(pic!=null)
       {
-        Navigator.pushNamed(context, CaptionPage.routeName, arguments: {
+       await Navigator.pushNamed(context, CaptionPage.routeName, arguments: {
           "pic": pic,
           "user": user,
           "friend": friend,

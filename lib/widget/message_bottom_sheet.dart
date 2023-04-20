@@ -6,15 +6,17 @@ import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 
+import '../model/chats.dart';
 import '../model/users.dart';
 import '../providers/message_provider.dart';
 import '../providers/tab_bar_provider.dart';
 import 'friends_list.dart';
 
-class MyBottomSheet extends StatelessWidget {
+class MessageBottomSheet extends StatelessWidget {
   AppUser? currentUser;
   Message? message;
-   MyBottomSheet({Key? key,required this.currentUser,required this.message}) : super(key: key);
+  final Chat chat;
+  MessageBottomSheet({Key? key,required this.currentUser,required this.message,required this.chat}) : super(key: key);
   static const routeName="MyBottomSheet";
 
   @override
@@ -82,7 +84,7 @@ class MyBottomSheet extends StatelessWidget {
     showDialog(
         context: context,
         builder: (context) {
-          return FriendsList(currentUser: currentUser,message: message,);
+          return FriendsList(currentUser: currentUser,message: message,chat: chat ,);
         });
   }
 

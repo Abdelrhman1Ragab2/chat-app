@@ -1,4 +1,3 @@
-import 'package:camera/camera.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 
@@ -21,8 +20,8 @@ class StatusProvider with ChangeNotifier {
   }
 
   Future<void> showStatus(Status status, String userId) async {
-    status.friendViews.add(userId);
-    List<String> newFriendsView = status.friendViews;
+    status.friendViews.addAll({userId:Timestamp.now()});
+    Map<String,dynamic> newFriendsView = status.friendViews;
     await _statusCollection
         .doc(status.id)
         .update({Status.friendViewsKey: newFriendsView});

@@ -2,7 +2,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:rxdart/rxdart.dart';
 import '../model/users.dart';
 
 class AuthProvider with ChangeNotifier {
@@ -17,11 +16,13 @@ class AuthProvider with ChangeNotifier {
   String? email;
   String? pass;
   String? userName;
-  num? phone;
+  String? phone;
   bool isLogin = false;
   bool isError=false;
   String?errorMessage="";
   bool isLoading=false;
+  bool isSecur=true;
+
 
   void onSubmit() async{
     bool isValid = formKey.currentState!.validate();
@@ -30,20 +31,26 @@ class AuthProvider with ChangeNotifier {
 
       try{
         isLoading=true;
+        notifyListeners();
         isLogin ?
         await signIn(email!, pass!) :
         await signUp(email!, pass!);
         isLoading=false;
-
+        isError=false;
       }
       on FirebaseException catch(error){
         errorMessage= error.code;
         isLoading=false;
         isError=true;
+        notifyListeners();
       }
     }
 
+  }
+  void changePasswordSecurty(){
+    isSecur=!isSecur;
     notifyListeners();
+
   }
 
   Future<void> signUp(String email, String password) async {
@@ -58,11 +65,14 @@ class AuthProvider with ChangeNotifier {
     final newUser = AppUser(
       id: userId,
       email: firebaseUser.email!,
+      isOnline: true,
       imgUrl: "https://picsum.photos/seed/$userId/200",
       name: userName!,
-      phone: "01550886075",
+      phone: phone!,
+      bio: "",
+      chats: [],
+      friendsRequest: [],
       friends: [],
-      isOnline: true,
     );
     await _addNewUser(newUser);
   }

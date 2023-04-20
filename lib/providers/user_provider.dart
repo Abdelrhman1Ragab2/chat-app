@@ -57,6 +57,10 @@ class UserProvider with ChangeNotifier {
         .map((event) => event.docs.map((e) => e.data()).single);
   }
 
+  Future<void> updateUserInfo(String userId,{var key,var value}){
+    return _userCollection.doc(userId).update({key:value});
+  }
+
 
 
 

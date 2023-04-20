@@ -9,7 +9,7 @@ class ChatProvider with ChangeNotifier {
   final _chatCollection = FirebaseFirestore.instance
       .collection("chats")
       .withConverter(
-          fromFirestore: Chat.fromFirebase, toFirestore: Chat.toFirebase);
+      fromFirestore: Chat.fromFirebase, toFirestore: Chat.toFirebase);
   final _userCollection = FirebaseFirestore.instance
       .collection("user")
       .withConverter(
@@ -24,11 +24,13 @@ class ChatProvider with ChangeNotifier {
   }
 
   Stream<List<Chat>> getChatStream() {
-    Query<Chat> query= _chatCollection.orderBy(Chat.chatLastUpdateKey,descending: true);
+    Query<Chat> query = _chatCollection.orderBy(
+        Chat.chatLastUpdateKey, descending: true);
     return query
         .snapshots()
         .map((event) => event.docs.map((e) => e.data()).toList());
   }
+
   Stream<Chat?> getChatStreamById(String id) {
     return _chatCollection.doc(id).snapshots().map((ds) => ds.data());
   }
@@ -37,26 +39,38 @@ class ChatProvider with ChangeNotifier {
     List<Chat> newChats = [];
     for (var element in chats) {
       if (
-      (currentUser.chats.contains(element.userAId)||currentUser.chats.contains(element.userBId)
-          &&
-          (element.userAId == currentUser.id || element.userBId== currentUser.id  )
-      ))
-      {newChats.add(element);}
+      (currentUser.chats.contains(element.userAId) ||
+          currentUser.chats.contains(element.userBId)
+              &&
+              (element.userAId == currentUser.id ||
+                  element.userBId == currentUser.id)
+      )) {
+        newChats.add(element);
+      }
     }
     return newChats;
   }
 
-  Future<void> updateFiends(AppUser user,  String friendId) async {
-    List<String> chats=user.chats;
-    chats.insert(0,friendId);
+  Chat? getChatForSpeceficUserAndFriend(List<Chat> chats, String userId,
+      String friendId) {
+    for (var element in chats) {
+      if ((element.userAId == userId || element.userBId == userId) &&
+          (element.userAId == friendId || element.userBId == friendId)){
+        return element;
+      }
+    }
+  }
+
+  Future<void> updateFiends(AppUser user, String friendId) async {
+    List<String> chats = user.chats;
+    chats.insert(0, friendId);
 
     return await _userCollection
         .doc(user.id)
-        .update({AppUser.userChatsKey: chats });
+        .update({AppUser.userChatsKey: chats});
   }
 
-  Future<void> updateChat(String chatId,{var key ,var value})
-  async {
-     return await _chatCollection.doc(chatId).update({key:value});
+  Future<void> updateChat(String chatId, {var key, var value}) async {
+    return await _chatCollection.doc(chatId).update({key: value});
   }
 }

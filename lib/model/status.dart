@@ -5,7 +5,7 @@ class Status {
   String content;
   String? caption;
   String userId;
-  List<String> friendViews;
+  Map<String,dynamic> friendViews;
   List<String> friendCanViews;
   Timestamp time;
   bool isImage;
@@ -43,7 +43,7 @@ class Status {
       caption: ds.get(captionKey),
       isImage: ds.get(imageKey),
       time: ds.get(timeKey),
-      friendViews: (ds.get(friendViewsKey) as List).cast(),
+      friendViews: (ds.get(friendViewsKey) as Map).cast(),
       friendCanViews: (ds.get(friendCanViewsKey) as List).cast(),
     );
   }

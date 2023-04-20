@@ -3,11 +3,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:provider/provider.dart';
 
 import '../model/message.dart';
-import '../model/users.dart';
-import 'message_provider.dart';
 class ImagingProvider with ChangeNotifier{
 
 
@@ -61,7 +58,7 @@ class ImagingProvider with ChangeNotifier{
   }
 
 
-  Future<void> addImageMessage(XFile pic,String userId, String friendId,String?caption) async {
+  Future<void> addImageMessage(XFile pic,String userId, String friendId,String?caption,String chatId) async {
     takingImages(true);
     final url = await uploadImage(userId, pic);
     if (url != null) {
@@ -74,7 +71,8 @@ class ImagingProvider with ChangeNotifier{
           Message(
               id: "",
               text: caption,
-              imgurl: url,
+              chatId: chatId,
+              imgUrl: url,
               senderId: userId,
               receiverId: friendId,
               createdAt: Timestamp.now(),

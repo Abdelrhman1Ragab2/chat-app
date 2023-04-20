@@ -9,14 +9,17 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../model/chats.dart';
 import '../model/users.dart';
 import '../providers/animation_provider.dart';
+import '../providers/chat_provider.dart';
 
 class FriendsList extends StatelessWidget {
   final AppUser currentUser;
   final Message message;
+  final Chat chat;
 
-  FriendsList({Key? key, required this.currentUser, required this.message})
+  FriendsList({Key? key, required this.currentUser, required this.message,required this.chat})
       : super(key: key);
   static const routeName = "Friends List";
   TextEditingController searchController = TextEditingController();
@@ -127,13 +130,16 @@ class FriendsList extends StatelessWidget {
                         await Provider.of<MessageProvider>(context).addMessage(
                             Message(
                                 id: "",
-                                imgurl: null,
+                                chatId: chat.id,
+                                imgUrl: null,
                                 text: message.text,
                                 senderId: currentUser.id,
                                 receiverId: friend.id,
                                 createdAt: Timestamp.now(),
                                 image: message.image)
                         );
+                        await Provider.of<ChatProvider>(context, listen: false)
+                            .updateChat(chat.id,key: Chat.chatLastUpdateKey,value: Timestamp.now());
                       },
                       child: Container(
                         padding: const EdgeInsets.all(10),

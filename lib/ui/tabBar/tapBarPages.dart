@@ -1,9 +1,5 @@
-import 'package:chat_if/model/status.dart';
 import 'package:chat_if/model/users.dart';
-import 'package:chat_if/providers/status_provider.dart';
 import 'package:chat_if/ui/tabBar/status_page.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -12,7 +8,6 @@ import '../../providers/authinticat.dart';
 import '../../providers/tab_bar_provider.dart';
 import '../../widget/drawer.dart';
 import '../../camera/camer_ui.dart';
-import 'call_page.dart';
 import 'chats_page.dart';
 import '../friends_search.dart';
 import 'friends.dart';
@@ -31,58 +26,52 @@ class _TabBarPagesState extends State<TabBarPages>
     with TickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
-    int currentIndexs=Provider.of<TabBarProvider>(context).currentIndex;
+    int currentIndexs = Provider.of<TabBarProvider>(context).currentIndex;
     TabController tabController = TabController(
-      length: 4,
+      length: 3,
       vsync: this,
       initialIndex: currentIndexs,
     );
 
     return Scaffold(
-        floatingActionButton:
-        currentIndexs==0 || currentIndexs==2
-                ? InkWell(
-                 onTap:(){
-                   if(currentIndexs==0)
-                     {
-                       Navigator.pushNamed(context, FriendsScreen.routeName);
-                     }
-                   else{
-                     Navigator.pushNamed(context, OpenCamera.routeName,
-                     arguments: {
-                       "user":widget.currentUser,
-                       "friend":null,
-                       "forStatus":true,
-                     }
-                     );
-                   }
-                 } ,
-                  child: Card(
-                      shape: const CircleBorder(),
-                      elevation: 20,
-                      child: Container(
-                        padding: const EdgeInsets.all(10),
-                        decoration: BoxDecoration(
-                            color: const Color.fromARGB(255, 24, 61, 119),
-                            boxShadow: [
-                              BoxShadow(
-                                  color: Colors.blue.shade100,
-                                  spreadRadius: 2,
-                                  offset: Offset.fromDirection(-1, -2)),
-                            ],
-                            borderRadius: const BorderRadius.all(Radius.circular(20))),
-                        width: currentIndexs==0?160:140,
-
-                          child: Text(
-                            currentIndexs==0?
-                            "add new friend":"add new story ",
-                            style: const TextStyle(color: Colors.white, fontSize: 18),
-                          ),
-
-                      ),
+        floatingActionButton: currentIndexs != 1
+            ? InkWell(
+                onTap: () {
+                  if (currentIndexs == 0) {
+                    Navigator.pushNamed(context, FriendsScreen.routeName);
+                  } else {
+                    Navigator.pushNamed(context, OpenCamera.routeName,
+                        arguments: {
+                          "user": widget.currentUser,
+                          "friend": null,
+                          "forStatus": true,
+                        });
+                  }
+                },
+                child: Card(
+                  shape: const CircleBorder(),
+                  elevation: 20,
+                  child: Container(
+                    padding: const EdgeInsets.all(10),
+                    decoration: BoxDecoration(
+                        color: const Color.fromARGB(255, 24, 61, 119),
+                        boxShadow: [
+                          BoxShadow(
+                              color: Colors.blue.shade100,
+                              spreadRadius: 2,
+                              offset: Offset.fromDirection(-1, -2)),
+                        ],
+                        borderRadius:
+                            const BorderRadius.all(Radius.circular(20))),
+                    width: currentIndexs == 0 ? 160 : 140,
+                    child: Text(
+                      currentIndexs == 0 ? "add new friend" : "add new story ",
+                      style: const TextStyle(color: Colors.white, fontSize: 18),
                     ),
-                )
-                : const SizedBox(),
+                  ),
+                ),
+              )
+            : const SizedBox(),
         appBar: AppBar(
           actions: [
             IconButton(
@@ -104,9 +93,9 @@ class _TabBarPagesState extends State<TabBarPages>
               Tab(
                 text: "Status",
               ),
-              Tab(
-                text: "Call",
-              ),
+              // Tab(
+              //   text: "Call",
+              // ),
             ],
             onTap: (index) =>
                 Provider.of<TabBarProvider>(context, listen: false)
@@ -121,7 +110,7 @@ class _TabBarPagesState extends State<TabBarPages>
             Friends(currentUser: widget.currentUser),
             ChatsPage(currentUser: widget.currentUser),
             StatusPage(currentUser: widget.currentUser),
-            CallPage()
+            // CallPage() add in new version from app;ication
           ],
         ));
   }

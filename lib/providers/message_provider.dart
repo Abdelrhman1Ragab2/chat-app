@@ -9,49 +9,46 @@ class MessageProvider with ChangeNotifier {
       .withConverter(
           fromFirestore: Message.fromFirebase, toFirestore: Message.toFirebase);
 
- Message? replyMessage;
-bool isReply=false;
- crateReplyMessage(Message? message){
-   isReply=true;
-   replyMessage=message;
-   notifyListeners();
- }
-  closeReplyMessage(){
-    isReply=false;
+  Message? replyMessage;
+  bool isReply = false;
+
+  crateReplyMessage(Message? message) {
+    isReply = true;
+    replyMessage = message;
     notifyListeners();
   }
- 
+
+  closeReplyMessage() {
+    isReply = false;
+    notifyListeners();
+  }
 
   Future<void> addMessage(Message message) async {
     await _messageCollection.doc().set(message);
   }
+
   Future<void> deleteMessage(String messageId) async {
     await _messageCollection.doc(messageId).delete();
   }
 
-  Stream<List<Message>> getMessageStream({required String senderId,required String receiverId}) {
-
-
- Query<Message> query=_messageCollection.orderBy(Message.messageCreatedAt,descending:true);
-  // where(Message.messageSender,arrayContains:  {senderId ,receiverId} );
-  // query.where(Message.messageReceiver,arrayContains: {senderId,receiverId});
-
-     return query
+  Stream<List<Message>> getMessageStream(String chatId) {
+    Query<Message> query =
+        _messageCollection.orderBy(Message.messageCreatedAt, descending: true);
+    return query
+        .where(Message.messageChatId, isEqualTo: chatId)
         .snapshots()
         .map((event) => event.docs.map((e) => e.data()).toList());
   }
 
-
-  List<Message> filteringMessage(List<Message> messages,{required String senderId,required String receiverId})
-  {
-
-   List<Message>newMessage=[];
-   messages.forEach((element) {
-    if(element.senderId==senderId && element.receiverId == receiverId ||
-        element.senderId==receiverId && element.receiverId ==senderId)
-      newMessage.add(element);
-   });
-   return newMessage;
-  }
-
+// List<Message> filteringMessage(List<Message> messages,{required String senderId,required String receiverId})
+// {
+//
+//  List<Message>newMessage=[];
+//  messages.forEach((element) {
+//   if(element.senderId==senderId && element.receiverId == receiverId ||
+//       element.senderId==receiverId && element.receiverId ==senderId)
+//     newMessage.add(element);
+//  });
+//  return newMessage;
+// }
 }

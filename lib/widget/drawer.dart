@@ -61,12 +61,11 @@ class MyDrawer extends StatelessWidget {
 
   Widget infoBody(BuildContext context) {
     return Container(
-      padding: EdgeInsets.all(2),
+      padding: const EdgeInsets.all(2),
       width: double.maxFinite,
       decoration:  BoxDecoration(
           image: DecorationImage(
               image: NetworkImage(currentUser.imgUrl
-                 // "https://expertphotography.b-cdn.net/wp-content/uploads/2020/08/social-media-profile-photos-3.jpg"
      ),
               fit: BoxFit.cover)),
       child: Column(
@@ -79,7 +78,7 @@ class MyDrawer extends StatelessWidget {
             ),
             padding: const EdgeInsets.all(5),
             child: Text(currentUser.name,
-                style: GoogleFonts.lobsterTwo(
+                style: GoogleFonts.alef(
                     fontWeight: FontWeight.bold,
                     fontSize: 28,
                     color: Colors.white)),
@@ -94,7 +93,7 @@ class MyDrawer extends StatelessWidget {
               scrollDirection: Axis.horizontal,
               child: Row(
                 children: [
-                  Text(currentUser.email,
+                  Text(currentUser.bio??currentUser.email,
                       style: GoogleFonts.alef(
                           fontWeight: FontWeight.bold,
                           fontSize: 18,

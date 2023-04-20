@@ -1,5 +1,4 @@
 import 'package:chat_if/model/users.dart';
-import 'package:chat_if/providers/authinticat.dart';
 import 'package:chat_if/providers/user_provider.dart';
 import 'package:chat_if/ui/drawer_options/files.dart';
 import 'package:chat_if/ui/splash_screen.dart';
@@ -11,7 +10,6 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../camera/caption_page.dart';
-import '../widget/bottom_sheet.dart';
 import '../widget/story_page.dart';
 import 'auth.dart';
 import '../camera/camer_ui.dart';
@@ -45,6 +43,7 @@ class _MainPageState extends State<MainPage> {
             phone: "fake",
             name: "fake",
             imgUrl: "",
+            bio: "",
             friends: [],
             email: "",
             isOnline: true,
@@ -59,6 +58,7 @@ class _MainPageState extends State<MainPage> {
             // }
             return MaterialApp(
               home: Scaffold(
+                appBar: AppBar(backgroundColor: Colors.green,),
                 body: Center(child: Text(snapshot.error.toString())),
               ),
             );
@@ -68,30 +68,30 @@ class _MainPageState extends State<MainPage> {
           return MaterialApp(
               debugShowCheckedModeBanner: false,
               theme: ThemeData(
-                  primaryColor: const Color.fromARGB(255, 22, 53, 103),
-                  accentColor: const Color.fromARGB(255, 127, 172, 181),
+                  primaryColor: const Color.fromARGB(255, 21, 23, 91),
+                  accentColor: const Color.fromARGB(255, 120, 203, 218),
                   appBarTheme: const AppBarTheme(
-                    color: const Color.fromARGB(255, 28, 65, 126),
+                    color:  Color.fromARGB(255, 28, 65, 126),
                   )),
               routes: {
                 MainPage.routeName: (context) => MainPage(cameras: widget.cameras),
                 ChatsPage.routeName: (context) => ChatsPage(currentUser: user!),
                 StatusPage.routeName: (context) => StatusPage(currentUser: user!),
-                CallPage.routeName: (context) => CallPage(),
+                CallPage.routeName: (context) => const CallPage(),
                 CattingPage.routeName: (context) => CattingPage(),
                 FriendsScreen.routeName: (context) =>
                     FriendsScreen(currentUser: user!),
-                FileOption.routeName: (context) => FileOption(),
-                VideoOption.routeName: (context) => VideoOption(),
-                PhotoOption.routeName: (context) => PhotoOption(),
+                FileOption.routeName: (context) => const FileOption(),
+                VideoOption.routeName: (context) => const VideoOption(),
+                PhotoOption.routeName: (context) => const PhotoOption(),
                 ProfileOption.routeName: (context) => ProfileOption(
                       currentUser: user!,
                     ),
-                SettingOption.routeName: (context) => SettingOption(),
+                SettingOption.routeName: (context) => const SettingOption(),
                 FriendsRequests.routeName: (context) =>
                     FriendsRequests(currentUser: user!),
                 OpenCamera.routeName:(context)=>OpenCamera(cameras: widget.cameras),
-                DelayedPage.routeName:(context)=>DelayedPage(),
+                DelayedPage.routeName:(context)=>DelayedPage(currentUser: user!),
                 CaptionPage.routeName:(context)=>CaptionPage(),
               },
               home: mapUserToHome(context, user));
@@ -99,8 +99,8 @@ class _MainPageState extends State<MainPage> {
   }
 
   Widget mapUserToHome(BuildContext context, AppUser? user) {
-    if (user == null) return Auth();
-    if (user!.id == _fakeUser) return SplashScreen();
+    if (user == null) return const Auth();
+    if (user.id == _fakeUser) return const SplashScreen();
     return TabBarPages(
       currentUser: user,
     );

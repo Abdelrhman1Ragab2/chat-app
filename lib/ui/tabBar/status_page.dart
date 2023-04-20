@@ -11,6 +11,7 @@ import 'package:intl/intl.dart';
 import 'package:path/path.dart';
 import 'package:provider/provider.dart';
 
+import '../../camera/camer_ui.dart';
 import '../../model/status.dart';
 import '../../providers/ImageProvider.dart';
 import '../../providers/user_provider.dart';
@@ -56,34 +57,47 @@ class StatusPage extends StatelessWidget {
   }
 
   Widget separatedContainer(BuildContext context) {
-
     return Container(
       width: double.infinity,
       height: 30,
-      color: Theme.of(context).primaryColor,
+      color: Theme
+          .of(context)
+          .primaryColor,
       child: const Padding(
         padding: EdgeInsets.all(5),
         child: Center(
             child: Text(
-          "Friends Status",
-          style: TextStyle(
-            color: Colors.white,
-            fontSize: 16,
-            fontWeight: FontWeight.w500
-          ),
-        )),
+              "Friends Status",
+              style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 16,
+                  fontWeight: FontWeight.w500
+              ),
+            )),
       ),
     );
   }
 
   Widget myStatus(BuildContext context, List<Status> status) {
+
     List<Status> myStatus = getMyStatus(status, currentUser.id);
     return InkWell(
-      onTap: (){
-        Navigator.pushNamed(context, DelayedPage.routeName, arguments: {
+      onTap: () {
+        if(myStatus.isEmpty)
+          {
+            Navigator.pushNamed(context, OpenCamera.routeName,
+                arguments: {
+                  "user":currentUser,
+                  "friend":null,
+                  "forStatus":true,
+                }
+            );
+          }
+        else{ Navigator.pushNamed(context, DelayedPage.routeName, arguments: {
           "status": myStatus,
           "appUser": currentUser,
-        });
+        });}
+
       },
       child: Padding(
         padding: const EdgeInsets.fromLTRB(2, 10, 2, 5),
@@ -94,7 +108,15 @@ class StatusPage extends StatelessWidget {
             const SizedBox(
               width: 5,
             ),
-            nameBody("My status")
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                nameBody("My status"),
+                myStatus.isEmpty?const Text("Tap to add new story"):
+                dateForMyStatus(myStatus[0]),
+
+              ],
+            )
           ],
         ),
       ),
@@ -103,33 +125,34 @@ class StatusPage extends StatelessWidget {
 
   Widget myImage(BuildContext context, List<Status> myStatus) {
     return DottedBorder(
-        strokeWidth: 3,
-        color: Colors.green.shade600,
-        dashPattern:
-            myStatus.length <= 1 ? [180, 0] : [(180) / myStatus.length, 5],
-        borderType: BorderType.Circle,
-        radius: const Radius.circular(32),
-        padding: const EdgeInsets.all(6),
-        child: Container(
-              height: 60,
-              width: 60,
-              decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(30),
-                  image: DecorationImage(
-                    image: NetworkImage(myStatus.isEmpty
-                        ? currentUser.imgUrl
-                        : myStatus[0].content),
-                    fit: BoxFit.fill,
-                  )),
-              child: const SizedBox()),
-        );
+      strokeWidth: 3,
+      color: Colors.grey,
+      dashPattern:
+      myStatus.length <= 1 ? [180, 0] : [(180) / myStatus.length, 5],
+      borderType: BorderType.Circle,
+      radius: const Radius.circular(32),
+      padding: const EdgeInsets.all(6),
+      child: Container(
+          height: 60,
+          width: 60,
+          decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(30),
+              image: DecorationImage(
+                image: NetworkImage(myStatus.isEmpty
+                    ? currentUser.imgUrl
+                    : myStatus[0].content),
+                fit: BoxFit.fill,
+              )),
+          child: const SizedBox()),
+    );
   }
 
   Widget statusFriendsBody(BuildContext ctx, List<Status> status) {
     return ListView.separated(
       itemBuilder: (context, index) =>
-          buildItem(ctx, status, currentUser.friends[index]),
-      separatorBuilder: (context, index) => const SizedBox(
+          buildFriendItem(ctx, status, currentUser.friends[index]),
+      separatorBuilder: (context, index) =>
+      const SizedBox(
         height: 5,
       ),
       itemCount: currentUser.friends
@@ -137,60 +160,67 @@ class StatusPage extends StatelessWidget {
     );
   }
 
-  Widget buildItem(BuildContext context, List<Status> status, String friendId) {
+  Widget buildFriendItem(BuildContext context, List<Status> status,
+      String friendId) {
     List<Status> myStatus = getMyStatus(status, friendId);
     return myStatus.isEmpty
         ? const SizedBox()
         : StreamBuilder(
-            stream:
-                Provider.of<UserProvider>(context).getUserStreamById(friendId),
-            builder: (context, snapshot) {
-              if (snapshot.connectionState == ConnectionState.waiting) {
-                return const Center(
-                  child: CircularProgressIndicator(),
-                );
-              }
-              if (snapshot.hasData) {
-                AppUser friend = snapshot.data!;
-                return Container(
-                  height: 80,
-                  padding: const EdgeInsets.all(3),
-                  child: InkWell(
-                      onTap: () async {
-                        Navigator.pushNamed(context, DelayedPage.routeName,
-                            arguments: {
-                              "status": myStatus,
-                              "appUser": friend,
-                            });
-                      },
-                      child: bodyItem(context, friend, myStatus)),
-                );
-              }
+        stream:
+        Provider.of<UserProvider>(context).getUserStreamById(friendId),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Center(
+              child: CircularProgressIndicator(),
+            );
+          }
+          if (snapshot.hasData) {
+            AppUser friend = snapshot.data!;
+            return Container(
+              height: 80,
+              padding: const EdgeInsets.all(3),
+              child: InkWell(
+                  onTap: () async {
+                    Navigator.pushNamed(context, DelayedPage.routeName,
+                        arguments: {
+                          "status": myStatus,
+                          "appUser": friend,
+                        });
+                  },
+                  child: bodyFriendItem(context, friend, myStatus)),
+            );
+          }
 
-              if (snapshot.hasData) {
-                return Center(
-                  child: Text(snapshot.error.toString()),
-                );
-              }
-              return const SizedBox();
-            });
+          if (snapshot.hasData) {
+            return Center(
+              child: Text(snapshot.error.toString()),
+            );
+          }
+          return const SizedBox();
+        });
   }
 
-  Widget bodyItem(BuildContext context, AppUser friend, List<Status> status) {
+  Widget bodyFriendItem(BuildContext context, AppUser friend,
+      List<Status> status) {
     return Row(
       children: [
         imagePrtBody(status, context),
         const SizedBox(width: 5),
         nameBody(friend.name),
-        datePartBody(status[0])
+        dateForFriendsStatus(status.last),
       ],
     );
   }
 
+
+
   Widget imagePrtBody(List<Status> status, BuildContext context) {
     return DottedBorder(
+
       strokeWidth: 3,
-      color: Colors.green.shade600,
+      color: status.last.friendViews.containsKey(currentUser.id)
+          ? Colors.grey
+          : Colors.green.shade600,
       dashPattern: status.length <= 1 ? [180, 0] : [(180) / status.length, 5],
       borderType: BorderType.Circle,
       radius: const Radius.circular(32),
@@ -217,10 +247,35 @@ class StatusPage extends StatelessWidget {
     );
   }
 
-  Widget datePartBody(Status status) {
-    return Container(
-      padding: const EdgeInsets.only(top: 10, bottom: 10),
-      child: Text((DateFormat.jm().format(status.time.toDate()))),
+  Widget dateForMyStatus(Status status) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.start,
+      children: [
+        Text(status.time
+            .toDate()
+            .day == DateTime
+            .now()
+            .day ? "today" : "yesterday"),
+        const SizedBox(width: 5,),
+        Text((DateFormat.jm().format(status.time.toDate()))),
+      ],
+    );
+  }
+
+
+  Widget dateForFriendsStatus(Status status) {
+    return Column(
+      children: [
+        Text(status.time
+            .toDate()
+            .day == DateTime
+            .now()
+            .day ? "today" : "yesterday"),
+        Container(
+          padding: const EdgeInsets.only(top: 10, bottom: 10),
+          child: Text((DateFormat.jm().format(status.time.toDate()))),
+        ),
+      ],
     );
   }
 
