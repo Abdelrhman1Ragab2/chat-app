@@ -61,7 +61,7 @@ class _DelayedPageState extends State<DelayedPage>
               child: viewIcon(status[index]))
         ],
       ),
-      body: storyBody(context, status[index],status.length,widget.currentUser.id,appUser.id),
+      body: storyBody(context, status[index],status.length,widget.currentUser,appUser.id),
     );
   }
 
@@ -107,15 +107,25 @@ class _DelayedPageState extends State<DelayedPage>
   Widget storyBody(
     BuildContext context,
     Status status,int len,
-      String userId,
+      AppUser user,
       String friendId,
   ) {
     return StreamBuilder<List<Chat>>(
         stream: Provider.of<ChatProvider>(context,listen: false).getChatStream(),
         builder: (context, snapshot) {
           if(snapshot.hasData){
+            if(!user.chats.contains(friendId))
+              {
+                  Provider.of<ChatProvider>(context,listen: false).crateChat(Chat(
+                  id: "",
+                  lastUpdate: Timestamp.now(),
+                  userAId: friendId,
+                  userBId: user.id,
+
+                ));}
             Chat? chat=Provider.of<ChatProvider>(context,listen: false).getChatForSpeceficUserAndFriend(
-                snapshot.data!,userId ,friendId );
+                snapshot.data!,user.id ,friendId );
+
                      return Stack(
               alignment: Alignment.bottomCenter,
               children: [
@@ -201,6 +211,7 @@ class _DelayedPageState extends State<DelayedPage>
   List<StoryItem> storyListed(Status status) {
     setState(() {
       storyItems.add(StoryItem.pageImage(
+        imageFit: BoxFit.contain,
           controller: storyController,
           url: status.content,
           shown: true,

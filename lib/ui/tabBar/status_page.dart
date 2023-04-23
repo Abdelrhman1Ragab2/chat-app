@@ -88,7 +88,7 @@ class StatusPage extends StatelessWidget {
             Navigator.pushNamed(context, OpenCamera.routeName,
                 arguments: {
                   "user":currentUser,
-                  "friend":null,
+                  "friend":"null",
                   "forStatus":true,
                 }
             );

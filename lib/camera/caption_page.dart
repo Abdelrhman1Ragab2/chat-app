@@ -38,10 +38,10 @@ class CaptionPage extends StatelessWidget {
       stream: Provider.of<ChatProvider>(context,listen: false).getChatStream(),
       builder: (context, snapshot) {
         if(snapshot.hasData){
-          Chat? chat=Provider.of<ChatProvider>(context,listen: false).getChatForSpeceficUserAndFriend(
-              snapshot.data!,user.id ,friend!.id );
+          Chat? chat =friend==null?null:Provider.of<ChatProvider>(context,listen: false).getChatForSpeceficUserAndFriend(
+              snapshot.data!,user.id ,friend.id );
           return Container(
-            color: const Color.fromARGB(255, 127, 172, 181),
+            color: Colors.black,
             child: Column(
               children: [
                 Expanded(
@@ -50,7 +50,7 @@ class CaptionPage extends StatelessWidget {
                 ),
                 Provider.of<ImagingProvider>(context).takingImage?
                 const Center(child: CircularProgressIndicator()):
-                textFieldBody(context, pic, user, friend, forStatus,chat!)
+                textFieldBody(context, pic, user, friend, forStatus,chat)
                 ,
               ],
             ),
@@ -67,14 +67,15 @@ class CaptionPage extends StatelessWidget {
       width: double.maxFinite,
       child: Image.file(
         File(pic.path),
-        fit: BoxFit.fitHeight,
+        fit: BoxFit.contain,
       ),
     );
   }
 
   Widget textFieldBody(BuildContext context, XFile pic, AppUser user,
-      AppUser? friend, bool forStatus,Chat chat) {
+      AppUser? friend, bool forStatus,Chat? chat) {
     return Container(
+      color: Colors.white,
       padding: const EdgeInsets.all(15),
       width: double.maxFinite,
       child: TextFormField(
@@ -83,7 +84,7 @@ class CaptionPage extends StatelessWidget {
           suffixIcon: sendIconBody(context, pic, user, friend, forStatus,chat),
           border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(30),
-              borderSide: BorderSide(color: Colors.white, width: 3)),
+          ),
           hintText: "caption",
           hintStyle: const TextStyle(
               color: Color.fromARGB(255, 13, 40, 82), fontSize: 18),
@@ -98,7 +99,7 @@ class CaptionPage extends StatelessWidget {
     AppUser user,
     AppUser? friend,
     bool forStatus,
-      Chat chat
+      Chat? chat
   )
   {
     return IconButton(
@@ -107,9 +108,9 @@ class CaptionPage extends StatelessWidget {
           await addStory(context, pic, user);
         } else {
           await Provider.of<ImagingProvider>(context, listen: false)
-              .addImageMessage(pic, user.id, friend!.id, controller.text,chat.id);
+              .addImageMessage(pic, user.id, friend!.id, controller.text,chat!.id);
           await Provider.of<ChatProvider>(context, listen: false)
-              .updateChat(chat.id,key: Chat.chatLastUpdateKey,value: Timestamp.now());
+              .updateChat(chat!.id,key: Chat.chatLastUpdateKey,value: Timestamp.now());
         }
         Navigator.of(context).pop();
       },

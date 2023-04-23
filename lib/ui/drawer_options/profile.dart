@@ -27,7 +27,7 @@ class ProfileOption extends StatelessWidget {
           const SizedBox(
             height: 15,
           ),
-          friendsInfoBody(),
+          friendsInfoBody(context),
         ],
       ),
     ));
@@ -71,11 +71,14 @@ class ProfileOption extends StatelessWidget {
         await editInfo(context, key);
       },
       title: Text(title),
-      trailing: const Icon(Icons.edit),
+      trailing: Icon(
+        Icons.edit,
+        color: Theme.of(context).primaryColor,
+      ),
     );
   }
 
-  Widget friendsInfoBody() {
+  Widget friendsInfoBody(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.all(4.0),
       child: Card(
@@ -84,17 +87,19 @@ class ProfileOption extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             friendInfoItem(
-                "Friend", Icons.person, currentUser.friends.length, 3),
-            friendInfoItem("Chat", Icons.chat, currentUser.chats.length, 3),
-            friendInfoItem("Friend requests", Icons.request_page,
-                currentUser.friends.length, 4),
+                context, "Friend", Icons.person, currentUser.friends.length, 3),
+            friendInfoItem(
+                context, "Chat", Icons.chat, currentUser.chats.length, 3),
+            friendInfoItem(context, "Friend requests", Icons.request_page,
+                currentUser.friendsRequest.length, 4),
           ],
         ),
       ),
     );
   }
 
-  Widget friendInfoItem(String title, IconData icon, int length, int flex) {
+  Widget friendInfoItem(
+      BuildContext context, String title, IconData icon, int length, int flex) {
     return Expanded(
       flex: flex,
       child: Padding(
@@ -103,6 +108,7 @@ class ProfileOption extends StatelessWidget {
           children: [
             Icon(
               icon,
+              color: Theme.of(context).primaryColor,
               size: 28,
             ),
             const SizedBox(
@@ -140,7 +146,7 @@ class ProfileOption extends StatelessWidget {
                       },
                       color: Theme.of(context).primaryColor.withOpacity(0.8),
                       child: const Text(
-                        "Edit",
+                        "save",
                         style: TextStyle(color: Colors.white),
                       ),
                     )

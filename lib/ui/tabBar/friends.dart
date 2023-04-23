@@ -228,12 +228,10 @@ class Friends extends StatelessWidget {
     else {
       await Provider.of<ChatProvider>(context, listen: false).crateChat(Chat(
           id: "",
-          messages: [],
           userAId: currentUser.id,
           userBId: friend.id,
           lastUpdate: Timestamp.now(),
-          userAActive: true,
-          userBActive: false));
+      ));
 
       await Provider.of<ChatProvider>(context, listen: false)
           .updateFiends(currentUser, friend.id);
