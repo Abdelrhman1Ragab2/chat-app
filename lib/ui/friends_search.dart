@@ -68,9 +68,9 @@ class FriendsScreen extends StatelessWidget {
           Provider.of<FriendProvider>(context, listen: false)
               .showFriendsSearch(true);
         },
-        child: Row(
+        child: const Row(
           mainAxisAlignment: MainAxisAlignment.center,
-          children: const [
+          children: [
             Text(
               "Search",
               style: TextStyle(fontSize: 16),

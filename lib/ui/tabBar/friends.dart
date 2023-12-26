@@ -227,11 +227,12 @@ class Friends extends StatelessWidget {
     } // my friend crate chat no need to crate a new chat
     else {
       await Provider.of<ChatProvider>(context, listen: false).crateChat(Chat(
+
           id: "",
-          userAId: currentUser.id,
-          userBId: friend.id,
+          users: [currentUser.id,friend.id],
           lastUpdate: Timestamp.now(),
-      ));
+      ),currentUser.id,friend.id
+      );
 
       await Provider.of<ChatProvider>(context, listen: false)
           .updateFiends(currentUser, friend.id);

@@ -1,8 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import '../model/chats.dart';
-import '../model/chats.dart';
-import '../model/chats.dart';
 import '../model/users.dart';
 
 class ChatProvider with ChangeNotifier {
@@ -15,47 +13,47 @@ class ChatProvider with ChangeNotifier {
       .withConverter(
       fromFirestore: AppUser.fromFirebase, toFirestore: AppUser.toFirebase);
 
-  Future<void> crateChat(Chat chat) async {
-    await _chatCollection.doc().set(chat);
+  Future<void> crateChat(Chat chat,String userId,String friendId) async {
+    List<Chat>chats=await getFutureChat(userId);
+    bool havePastChat=false;
+    for (var element in chats) {
+      if (
+      element.users.contains(friendId)
+      ) {
+        havePastChat=true;
+      }
+
+    }
+    if(havePastChat==false){
+      await _chatCollection.doc().set(chat);
+    }
+
   }
 
   Future<void> deleteChat(String id) async {
     await _chatCollection.doc(id).delete();
   }
 
-  Stream<List<Chat>> getChatStream() {
+  Stream<List<Chat>> getChatStream(String userId) {
     Query<Chat> query = _chatCollection.orderBy(
         Chat.chatLastUpdateKey, descending: true);
-    return query
+
+    return query.where(Chat.chatUsersKey,arrayContains: userId)
         .snapshots()
         .map((event) => event.docs.map((e) => e.data()).toList());
   }
-
-  Stream<Chat?> getChatStreamById(String id) {
-    return _chatCollection.doc(id).snapshots().map((ds) => ds.data());
+  Future<List<Chat>> getFutureChat(String userId) {
+    Query<Chat> query = _chatCollection.where(Chat.chatUsersKey,arrayContains: userId);
+    return query
+        .snapshots()
+        .map((event) => event.docs.map((e) => e.data()).toList()).first;
   }
 
-  List<Chat> filteringChat(List<Chat> chats, AppUser currentUser) {
-    List<Chat> newChats = [];
-    for (var element in chats) {
-      if (
-      (currentUser.chats.contains(element.userAId) ||
-          currentUser.chats.contains(element.userBId)
-              &&
-              (element.userAId == currentUser.id ||
-                  element.userBId == currentUser.id)
-      )) {
-        newChats.add(element);
-      }
-    }
-    return newChats;
-  }
 
-  Chat? getChatForSpeceficUserAndFriend(List<Chat> chats, String userId,
+  Chat? getChatForSpecificUserAndFriend(List<Chat> chats, String userId,
       String friendId) {
     for (var element in chats) {
-      if ((element.userAId == userId || element.userBId == userId) &&
-          (element.userAId == friendId || element.userBId == friendId)){
+      if (element.users.contains(userId)&&element.users.contains(friendId)){
         return element;
       }
     }
@@ -69,6 +67,12 @@ class ChatProvider with ChangeNotifier {
         .doc(user.id)
         .update({AppUser.userChatsKey: chats});
   }
+  Future<void> test(AppUser user, String friendId) async {
+    return await _userCollection
+        .doc(user.id)
+        .update({AppUser.userBiolKey:"some need test" });
+  }
+
 
   Future<void> updateChat(String chatId, {var key, var value}) async {
     return await _chatCollection.doc(chatId).update({key: value});

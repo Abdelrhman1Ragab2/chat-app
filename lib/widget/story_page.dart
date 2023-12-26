@@ -111,7 +111,7 @@ class _DelayedPageState extends State<DelayedPage>
       String friendId,
   ) {
     return StreamBuilder<List<Chat>>(
-        stream: Provider.of<ChatProvider>(context,listen: false).getChatStream(),
+        stream: Provider.of<ChatProvider>(context,listen: false).getChatStream(user.id),
         builder: (context, snapshot) {
           if(snapshot.hasData){
             if(!user.chats.contains(friendId))
@@ -119,11 +119,12 @@ class _DelayedPageState extends State<DelayedPage>
                   Provider.of<ChatProvider>(context,listen: false).crateChat(Chat(
                   id: "",
                   lastUpdate: Timestamp.now(),
-                  userAId: friendId,
-                  userBId: user.id,
+                  users: [user.id,friendId,]
 
-                ));}
-            Chat? chat=Provider.of<ChatProvider>(context,listen: false).getChatForSpeceficUserAndFriend(
+                ),user.id,friendId
+
+                  );}
+            Chat? chat=Provider.of<ChatProvider>(context,listen: false).getChatForSpecificUserAndFriend(
                 snapshot.data!,user.id ,friendId );
 
                      return Stack(

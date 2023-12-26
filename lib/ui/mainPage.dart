@@ -69,7 +69,7 @@ class _MainPageState extends State<MainPage> {
               debugShowCheckedModeBanner: false,
               theme: ThemeData(
                   primaryColor: const Color.fromARGB(255, 21, 23, 91),
-                  accentColor: const Color.fromARGB(255, 120, 203, 218),
+                  hintColor: const Color.fromARGB(255, 120, 203, 218),
                   appBarTheme: const AppBarTheme(
                     color:  Color.fromARGB(255, 28, 65, 126),
                   )),

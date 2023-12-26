@@ -18,7 +18,8 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
   final cameras =await availableCameras();
-  runApp(MultiProvider(providers: [
+  runApp(
+      MultiProvider(providers: [
     ChangeNotifierProvider(create: (_) => UserProvider()),
     ChangeNotifierProvider(create: (_) => TabBarProvider()),
     ChangeNotifierProvider(create: (_) =>AuthProvider()),

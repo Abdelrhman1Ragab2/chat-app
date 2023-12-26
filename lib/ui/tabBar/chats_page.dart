@@ -28,11 +28,10 @@ class ChatsPage extends StatelessWidget {
 
   Widget chatsBody(BuildContext ctx) {
     return StreamBuilder(
-        stream: Provider.of<ChatProvider>(ctx, listen: false).getChatStream(),
+        stream: Provider.of<ChatProvider>(ctx, listen: false).getChatStream(currentUser.id),
         builder: (context, snapshot) {
           if (snapshot.hasData) {
-            List<Chat> chats = Provider.of<ChatProvider>(ctx, listen: false)
-                .filteringChat(snapshot.data!, currentUser);
+            List<Chat> chats =snapshot.data!;
             return chats.isEmpty
                 ?  Padding(
               padding:  const EdgeInsets.all(20.0),
@@ -204,8 +203,8 @@ class ChatsPage extends StatelessWidget {
   }
 
   String getFriendId(Chat chat) {
-    if (chat.userAId == currentUser.id) return chat.userBId;
-    return chat.userAId;
+    if (chat.users[0] == currentUser.id) return chat.users[1];
+    return chat.users[0];
   }
 
 }

@@ -53,23 +53,18 @@ class FriendProvider with ChangeNotifier{
         .update({AppUser.friendsRequestsKey: friendsRequest });
   }
 
-  Future<void> sortFiendsList(AppUser user,  String friendId) async {
-    List<String> friends=user.friends;
-    int index=friends.indexOf(friendId);
-    friends.removeAt(index);
-    friends.insert(0,friendId);
-    return await _userCollection
-        .doc(user.id)
-        .update({AppUser.userFriendsKey: friends });
-  }
-
-  Future<void>sortFriendsByLastMessage(AppUser currentUser)
-  async {
-  }
+  // Future<void> sortFiendsList(AppUser user,  String friendId) async {  // to make recent chat first in the list of chat but it can be make it from the query in firebase
+  //   List<String> friends=user.friends;
+  //   int index=friends.indexOf(friendId);
+  //   friends.removeAt(index);
+  //   friends.insert(0,friendId);
+  //   return await _userCollection
+  //       .doc(user.id)
+  //       .update({AppUser.userFriendsKey: friends });
+  // }
 
 
   void showFriendsSearch(bool value){
-
     showFriend=value;
     notifyListeners();
   }

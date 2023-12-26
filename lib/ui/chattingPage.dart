@@ -15,7 +15,7 @@ import '../widget/message_bottom_sheet.dart';
 import '../camera/camer_ui.dart';
 
 class CattingPage extends StatefulWidget {
-  CattingPage({
+  const CattingPage({
     Key? key,
   }) : super(key: key);
   static const routeName = "CattingPage";
@@ -27,11 +27,7 @@ class CattingPage extends StatefulWidget {
 class _CattingPageState extends State<CattingPage> {
   TextEditingController controller = TextEditingController();
 
-  @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -401,14 +397,14 @@ class _CattingPageState extends State<CattingPage> {
       Chat chat) {
     return IconButton(
       onPressed: () async {
+        print("user.id out ${user.id}");
+
+
         if(controller.text.isNotEmpty)
           {
-            await Provider.of<FriendProvider>(context, listen: false)
-                .sortFiendsList(user, friend.id);
-
             await Provider.of<MessageProvider>(context, listen: false).addMessage(
                 Message(
-                  id: "",
+                  id:"",
                   imgUrl: null,
                   chatId: chat.id,
                   createdAt: Timestamp.now(),
@@ -417,10 +413,14 @@ class _CattingPageState extends State<CattingPage> {
                   text: controller.text,
                   image: false,
                 ));
+
+            print("user.id in ${user.id}");
+
             if (!friend.chats.contains(user.id)) {
               Provider.of<ChatProvider>(context, listen: false)
                   .updateFiends(friend, user.id);
             }
+            print("user.id  in${user.id}");
             await Provider.of<ChatProvider>(context, listen: false).updateChat(
                 chat.id
                 , key: Chat.chatLastUpdateKey,
@@ -428,6 +428,7 @@ class _CattingPageState extends State<CattingPage> {
 
             controller.clear();
           }
+
 
       },
       icon: const Icon(Icons.send),

@@ -35,10 +35,10 @@ class CaptionPage extends StatelessWidget {
   Widget buildBody(BuildContext context, XFile pic, AppUser user,
       AppUser? friend, bool forStatus) {
     return StreamBuilder<List<Chat>>(
-      stream: Provider.of<ChatProvider>(context,listen: false).getChatStream(),
+      stream: Provider.of<ChatProvider>(context,listen: false).getChatStream(user.id),
       builder: (context, snapshot) {
         if(snapshot.hasData){
-          Chat? chat =friend==null?null:Provider.of<ChatProvider>(context,listen: false).getChatForSpeceficUserAndFriend(
+          Chat? chat =friend==null?null:Provider.of<ChatProvider>(context,listen: false).getChatForSpecificUserAndFriend(
               snapshot.data!,user.id ,friend.id );
           return Container(
             color: Colors.black,

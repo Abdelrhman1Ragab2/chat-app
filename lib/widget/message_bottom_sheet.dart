@@ -41,7 +41,7 @@ class MessageBottomSheet extends StatelessWidget {
 
             }),
             bottomIcon(context, "Copy", Icons.copy, () {
-              final data =ClipboardData(text: message!.text);
+              final data =ClipboardData(text: message!.text!);
               Clipboard.setData(data);
               Navigator.pop(context);
             }),

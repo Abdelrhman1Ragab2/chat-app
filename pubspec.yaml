@@ -73,7 +73,7 @@ dev_dependencies:
 flutter_icons:
     android: "launcher_icon"
     ios: true
-    image_path: "assets/icons/chat logo.PNG"
+    image_path: "assets/icons/chatlogo.PNG"
 
 
 # For information on the generic Dart part of this file, see the

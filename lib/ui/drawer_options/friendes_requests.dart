@@ -59,7 +59,7 @@ class FriendsRequests extends StatelessWidget {
 
   Widget _profileDetailsRequest(BuildContext context, AppUser friend) {
     bool isFriend = currentUser.friends.contains(friend.id);
-    return Container(
+    return SizedBox(
       width: 250,
       child: Card(
           elevation: 8,
@@ -99,8 +99,7 @@ class FriendsRequests extends StatelessWidget {
                 ),
                 InkWell(
                   onTap: () async {
-                    await acceptRequest(context,friend);
-
+                    await acceptRequest(context, friend);
                   },
                   child: Card(
                     elevation: 15,
@@ -122,17 +121,14 @@ class FriendsRequests extends StatelessWidget {
     );
   }
 
-  Future<void> acceptRequest(BuildContext context,AppUser friend)
-  async{
-   await Provider.of<FriendProvider>(context, listen: false)
+  Future<void> acceptRequest(BuildContext context, AppUser friend) async {
+    await Provider.of<FriendProvider>(context, listen: false)
         .updateFiends(currentUser, friend.id);
 
     await Provider.of<FriendProvider>(context, listen: false)
         .updateFiends(friend, currentUser.id);
 
-   await Provider.of<FriendProvider>(context, listen: false)
+    await Provider.of<FriendProvider>(context, listen: false)
         .deleteFiendsRequests(currentUser, friend.id);
-
-
   }
 }
