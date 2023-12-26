@@ -6,10 +6,10 @@ import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 
-import '../model/chats.dart';
-import '../model/users.dart';
-import '../providers/message_provider.dart';
-import '../providers/tab_bar_provider.dart';
+import '../../model/chats.dart';
+import '../../model/users.dart';
+import '../../providers/message_provider.dart';
+import '../../providers/tab_bar_provider.dart';
 import 'friends_list.dart';
 
 class MessageBottomSheet extends StatelessWidget {

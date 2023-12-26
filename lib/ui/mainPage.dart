@@ -4,15 +4,13 @@ import 'package:chat_if/ui/drawer_options/files.dart';
 import 'package:chat_if/ui/splash_screen.dart';
 import 'package:chat_if/ui/tabBar/status_page.dart';
 import 'package:chat_if/ui/tabBar/tapBarPages.dart';
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../camera/caption_page.dart';
-import '../widget/story_page.dart';
+import '../core/camera/camer_ui.dart';
+import '../core/camera/caption_page.dart';
+import '../core/widget/story_page.dart';
 import 'auth.dart';
-import '../camera/camer_ui.dart';
 import 'drawer_options/friendes_requests.dart';
 import 'tabBar/call_page.dart';
 import 'tabBar/chats_page.dart';
@@ -24,7 +22,7 @@ import 'drawer_options/videos.dart';
 import 'friends_search.dart';
 
 class MainPage extends StatefulWidget {
-  final cameras;
+  final  cameras;
   const MainPage({Key? key,required this.cameras}) : super(key: key);
   static const routeName = "MainPage";
 

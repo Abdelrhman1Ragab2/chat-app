@@ -6,12 +6,11 @@ import 'package:chat_if/providers/ImageProvider.dart';
 import 'package:chat_if/providers/chat_provider.dart';
 import 'package:chat_if/providers/status_provider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../model/chats.dart';
-import '../model/users.dart';
+import '../../model/chats.dart';
+import '../../model/users.dart';
 
 class CaptionPage extends StatelessWidget {
   CaptionPage({Key? key}) : super(key: key);

@@ -1,13 +1,12 @@
 import 'package:camera/camera.dart';
-import 'package:chat_if/camera/caption_page.dart';
 import 'package:chat_if/model/users.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../model/message.dart';
-import '../providers/ImageProvider.dart';
-import '../ui/chattingPage.dart';
+import '../../model/message.dart';
+import '../../providers/ImageProvider.dart';
+import '../../ui/chattingPage.dart';
+import 'caption_page.dart';
 
 class OpenCamera extends StatefulWidget {
   final cameras;

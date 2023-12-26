@@ -1,17 +1,16 @@
 import 'package:chat_if/model/users.dart';
 import 'package:chat_if/providers/authinticat.dart';
 import 'package:chat_if/ui/drawer_options/photos.dart';
-import 'package:flutter/cupertino.dart';
+import 'package:chat_if/ui/drawer_options/profile.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 
-import '../model/options.dart';
-import '../ui/drawer_options/files.dart';
-import '../ui/drawer_options/friendes_requests.dart';
-import '../ui/drawer_options/profile.dart';
-import '../ui/drawer_options/settings.dart';
-import '../ui/drawer_options/videos.dart';
+import '../../model/options.dart';
+import '../../ui/drawer_options/files.dart';
+import '../../ui/drawer_options/friendes_requests.dart';
+import '../../ui/drawer_options/settings.dart';
+import '../../ui/drawer_options/videos.dart';
 
 class MyDrawer extends StatelessWidget {
   final AppUser currentUser;

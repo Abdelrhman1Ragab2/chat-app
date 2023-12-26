@@ -1,18 +1,15 @@
 import 'package:chat_if/model/users.dart';
 import 'package:chat_if/providers/chat_provider.dart';
-import 'package:chat_if/providers/friend_provider.dart';
 import 'package:chat_if/providers/message_provider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
+import '../core/camera/camer_ui.dart';
+import '../core/widget/message_bottom_sheet.dart';
 import '../model/chats.dart';
 import '../model/message.dart';
 import '../providers/tab_bar_provider.dart';
-import '../widget/message_bottom_sheet.dart';
-import '../camera/camer_ui.dart';
 
 class CattingPage extends StatefulWidget {
   const CattingPage({
@@ -66,9 +63,10 @@ class _CattingPageState extends State<CattingPage> {
       onTap: () {
         if (Provider
             .of<TabBarProvider>(context, listen: false)
-            .showBottomSheet)
+            .showBottomSheet) {
           Provider.of<TabBarProvider>(context, listen: false)
               .onShowBottomSheet(showSheet: false);
+        }
       },
       child: Container(
         decoration: const BoxDecoration(
@@ -81,8 +79,8 @@ class _CattingPageState extends State<CattingPage> {
           crossAxisAlignment: CrossAxisAlignment.end,
           children: [
             Expanded(
-              child: listMessage(context, friend, appUser,chat),
               flex: 11,
+              child: listMessage(context, friend, appUser,chat),
             ),
             const SizedBox(
               height: 3,
@@ -105,22 +103,21 @@ class _CattingPageState extends State<CattingPage> {
             return const Center(child: CircularProgressIndicator());
           }
           if (snapshot.hasData) {
-            var data = snapshot.data;
-            print("data.length :         "+ data!.length.toString());
+            var data = snapshot.data!;
 
-            if (data!.isEmpty) {
+            if (data.isEmpty) {
               return const SizedBox();
             }
             bool? isReadMessage = readMessage(data.first, user);
             return ListView.separated(
               reverse: true,
               itemBuilder: (context, index) =>
-                  messageBody(data![index], ctx, user, friend, isReadMessage,chat),
+                  messageBody(data[index], ctx, user, friend, isReadMessage,chat),
               separatorBuilder: (context, index) =>
               const SizedBox(
                 height: 5,
               ),
-              itemCount: data!.length,
+              itemCount: data.length,
             );
           }
           if (snapshot.hasError) {

@@ -1,17 +1,16 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
-import '../model/status.dart';
-import '../model/users.dart';
-import '../providers/user_provider.dart';
+import '../../model/status.dart';
+import '../../model/users.dart';
+import '../../providers/user_provider.dart';
 
 class ViewersBottomSheet extends StatelessWidget {
   final AppUser currentUser;
-  Status status;
+  final Status status;
 
-  ViewersBottomSheet(
+  const ViewersBottomSheet(
       {Key? key, required this.status, required this.currentUser})
       : super(key: key);
   static const routeName = "ViewBottomSheet";
@@ -29,10 +28,10 @@ class ViewersBottomSheet extends StatelessWidget {
         //color: Colors.black54,
         child: status.friendViews.isEmpty
             ? const Center(
-                child: Text("No Views",style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 18
-                ),),
+                child: Text(
+                  "No Views",
+                  style: TextStyle(color: Colors.white, fontSize: 18),
+                ),
               )
             : ListView.separated(
                 itemBuilder: (context, index) =>
@@ -122,9 +121,9 @@ class ViewersBottomSheet extends StatelessWidget {
   double gitHeight(int len) {
     if (len > 4) {
       return 250.0;
-    } else if (len<2){
+    } else if (len < 2) {
       return 70;
     }
-    return 70+len*70;
+    return 70 + len * 70;
   }
 }

@@ -1,23 +1,22 @@
+import 'package:chat_if/core/widget/viewers_status_sheet.dart';
 import 'package:chat_if/providers/status_provider.dart';
-import 'package:chat_if/widget/viewers_status_sheet.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:story_view/controller/story_controller.dart';
 import 'package:story_view/story_view.dart';
 
-import '../model/chats.dart';
-import '../model/message.dart';
-import '../model/status.dart';
-import '../model/users.dart';
-import '../providers/chat_provider.dart';
-import '../providers/message_provider.dart';
+import '../../model/chats.dart';
+import '../../model/message.dart';
+import '../../model/status.dart';
+import '../../model/users.dart';
+import '../../providers/chat_provider.dart';
+import '../../providers/message_provider.dart';
+
 
 class DelayedPage extends StatefulWidget {
   final AppUser currentUser;
 
-  DelayedPage({Key? key, required this.currentUser}) : super(key: key);
+  const DelayedPage({Key? key, required this.currentUser}) : super(key: key);
   static const routeName = "DelayedPage";
 
   @override

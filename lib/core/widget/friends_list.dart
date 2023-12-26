@@ -1,18 +1,17 @@
 import 'dart:math';
 
 import 'package:chat_if/model/message.dart';
-import 'package:chat_if/providers/friend_provider.dart';
 import 'package:chat_if/providers/message_provider.dart';
 import 'package:chat_if/providers/user_provider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../model/chats.dart';
-import '../model/users.dart';
-import '../providers/animation_provider.dart';
-import '../providers/chat_provider.dart';
+import '../../model/chats.dart';
+import '../../model/users.dart';
+import '../../providers/animation_provider.dart';
+import '../../providers/chat_provider.dart';
+
 
 class FriendsList extends StatelessWidget {
   final AppUser currentUser;

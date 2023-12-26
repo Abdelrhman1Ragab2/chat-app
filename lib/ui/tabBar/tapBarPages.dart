@@ -1,13 +1,12 @@
 import 'package:chat_if/model/users.dart';
 import 'package:chat_if/ui/tabBar/status_page.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../../core/camera/camer_ui.dart';
+import '../../core/widget/drawer.dart';
 import '../../providers/authinticat.dart';
 import '../../providers/tab_bar_provider.dart';
-import '../../widget/drawer.dart';
-import '../../camera/camer_ui.dart';
 import 'chats_page.dart';
 import '../friends_search.dart';
 import 'friends.dart';
